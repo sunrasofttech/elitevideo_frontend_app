@@ -1,3 +1,4 @@
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elite/constant/app_colors.dart';
@@ -10,13 +11,7 @@ import 'package:elite/utils/widgets/customcircularprogressbar.dart';
 import 'package:elite/utils/widgets/textwidget.dart';
 
 class PlaylistScreen extends StatefulWidget {
-  const PlaylistScreen({
-    super.key,
-    this.artistId,
-    this.languageId,
-    required this.name,
-    required this.coverImg,
-  });
+  const PlaylistScreen({super.key, this.artistId, this.languageId, required this.name, required this.coverImg});
   final String? artistId;
   final String name;
   final String coverImg;
@@ -31,9 +26,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
   @override
   void initState() {
     context.read<GetDataByArtistAndLanguageCubit>().getAllMusic(
-          artistId: widget.artistId,
-          languageId: widget.languageId,
-        );
+      artistId: widget.artistId,
+      languageId: widget.languageId,
+    );
     super.initState();
   }
 
@@ -50,13 +45,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
                   CustomCachedCard(
                     height: MediaQuery.of(context).size.height * 0.4,
                     width: MediaQuery.of(context).size.width * 1,
-                    imageUrl: widget.coverImg,
+                    imageUrl: "${AppUrls.baseUrl}/{widget.coverImg}",
                   ),
-                  const Positioned(
-                    top: 10,
-                    left: 10,
-                    child: CustomBackButton(),
-                  ),
+                  const Positioned(top: 10, left: 10, child: CustomBackButton()),
                   Positioned(
                     bottom: 10,
                     left: 10,
@@ -82,7 +73,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
                 child: BlocConsumer<GetDataByArtistAndLanguageCubit, GetDataByArtistAndLanguageState>(
                   listener: (context, state) {
                     if (state is GetDataByArtistAndLanguageLoadedState) {
-                      listener = state.model.data
+                      listener =
+                          state.model.data
                               ?.map((e) => int.tryParse(e.watchedCount?.toString() ?? '') ?? 0)
                               .fold<int>(0, (int sum, int count) => sum + count) ??
                           1;
@@ -90,17 +82,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
                   },
                   builder: (context, state) {
                     if (state is GetDataByArtistAndLanguageLoadingState) {
-                      return const Center(
-                        child: CustomCircularProgressIndicator(),
-                      );
+                      return const Center(child: CustomCircularProgressIndicator());
                     }
                     if (state is GetDataByArtistAndLanguageLoadedState) {
                       return state.model.data?.isEmpty ?? true
-                          ? const Center(
-                              child: TextWidget(
-                                text: "No Playlist Available",
-                              ),
-                            )
+                          ? const Center(child: TextWidget(text: "No Playlist Available"))
                           : Column(
                               children: [
                                 Row(
@@ -124,9 +110,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
                                       child: Container(
                                         padding: const EdgeInsets.all(8),
                                         decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(30),
-                                          ),
+                                          borderRadius: BorderRadius.all(Radius.circular(30)),
                                           color: Color.fromRGBO(77, 197, 253, 1),
                                         ),
                                         child: const Icon(
@@ -149,10 +133,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => AudioPlayerScreen(
-                                              playlist: state.model.data ?? [],
-                                              startIndex: index,
-                                            ),
+                                            builder: (context) =>
+                                                AudioPlayerScreen(playlist: state.model.data ?? [], startIndex: index),
                                           ),
                                         );
                                       },
@@ -171,21 +153,14 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
                                               ),
                                             ),
                                             sb10w(),
-                                            CustomCachedCard(
-                                              height: 60,
-                                              width: 60,
-                                              imageUrl: data?.coverImg ?? "",
-                                            ),
+                                            CustomCachedCard(height: 60, width: 60, imageUrl: data?.coverImg ?? ""),
                                             const SizedBox(width: 12),
                                             Expanded(
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
-                                                  TextWidget(
-                                                    text: data?.songTitle,
-                                                    fontWeight: FontWeight.w700,
-                                                  ),
+                                                  TextWidget(text: data?.songTitle, fontWeight: FontWeight.w700),
                                                   TextWidget(
                                                     text: data?.artist?.artistName ?? "",
                                                     fontWeight: FontWeight.w700,

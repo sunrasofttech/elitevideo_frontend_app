@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
@@ -23,11 +24,7 @@ import 'package:rxdart/rxdart.dart';
 class AudioPlayerScreen extends StatefulWidget {
   final List<MusicModel> playlist;
   final int startIndex;
-  const AudioPlayerScreen({
-    super.key,
-    required this.playlist,
-    required this.startIndex,
-  });
+  const AudioPlayerScreen({super.key, required this.playlist, required this.startIndex});
 
   @override
   State<AudioPlayerScreen> createState() => _AudioPlayerScreenState();
@@ -37,15 +34,11 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
   late ConcatenatingAudioSource _playList;
 
   Stream<PositionData> get _positionDataStream => Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
-        globalAudioPlayer.positionStream,
-        globalAudioPlayer.bufferedPositionStream,
-        globalAudioPlayer.durationStream,
-        (position, bufferedPosition, duration) => PositionData(
-          position,
-          bufferedPosition,
-          duration ?? Duration.zero,
-        ),
-      );
+    globalAudioPlayer.positionStream,
+    globalAudioPlayer.bufferedPositionStream,
+    globalAudioPlayer.durationStream,
+    (position, bufferedPosition, duration) => PositionData(position, bufferedPosition, duration ?? Duration.zero),
+  );
 
   @override
   void initState() {
@@ -54,12 +47,10 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       if (index != null && index >= 0 && index < widget.playlist.length) {
         final currentSong = widget.playlist[index];
         context.read<UpdateWatchedCountCubit>().updateWatched(
-              count: currentSong.watchedCount ?? 1,
-              musicId: currentSong.id ?? "",
-            );
-        context.read<PostChooseForYouCubit>().postChoose(
-              musicId: currentSong.id ?? "",
-            );
+          count: currentSong.watchedCount ?? 1,
+          musicId: currentSong.id ?? "",
+        );
+        context.read<PostChooseForYouCubit>().postChoose(musicId: currentSong.id ?? "");
       }
     });
     super.initState();
@@ -73,14 +64,16 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
     _playList = ConcatenatingAudioSource(
       children: widget.playlist.map((music) {
         return AudioSource.uri(
-          Uri.parse(music.songFile?.contains('https') ?? false ? "${music.songFile}" : "https://${music.songFile}"),
+          Uri.parse(
+            music.songFile?.contains('https') ?? false
+                ? "${AppUrls.baseUrl}/${music.songFile}"
+                : "https://${music.songFile}",
+          ),
           tag: MediaItem(
             id: music.id ?? "",
             title: music.songTitle ?? "",
             artist: music.artist?.artistName ?? "",
-            artUri: Uri.parse(
-              "${music.coverImg}",
-            ),
+            artUri: Uri.parse("${AppUrls.baseUrl}/${music.coverImg}"),
           ),
         );
       }).toList(),
@@ -121,9 +114,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                   );
                 },
               ),
-              const SizedBox(
-                height: 5,
-              ),
+              const SizedBox(height: 5),
               Row(
                 children: [
                   const Spacer(),
@@ -150,9 +141,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                                   addPlayListPopUp(context, songId);
                                 },
                               ),
-                              const TextWidget(
-                                text: "Add to Playlist",
-                              )
+                              const TextWidget(text: "Add to Playlist"),
                             ],
                           );
                         },
@@ -161,9 +150,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               StreamBuilder<PositionData>(
                 stream: _positionDataStream,
                 builder: (context, snapshot) {
@@ -179,9 +166,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                     thumbColor: AppColor.blueColor,
                     barHeight: 12,
                     timeLabelPadding: 9,
-                    timeLabelTextStyle: const TextStyle(
-                      color: AppColor.whiteColor,
-                    ),
+                    timeLabelTextStyle: const TextStyle(color: AppColor.whiteColor),
                   );
                 },
               ),
@@ -222,9 +207,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
       context: context,
       builder: (context) {
         return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           backgroundColor: Colors.black87,
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -265,10 +248,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                   child: BlocBuilder<GetAllPlaylistCubit, GetAllPlaylistState>(
                     builder: (context, state) {
                       if (state is GetAllPlaylistLoadingState) {
-                        return const SizedBox(
-                          height: 100,
-                          child: Center(child: CircularProgressIndicator()),
-                        );
+                        return const SizedBox(height: 100, child: Center(child: CircularProgressIndicator()));
                       } else if (state is GetAllPlaylistLoadedState) {
                         final playlists = state.model.playlists;
 
@@ -279,22 +259,15 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                               children: [
                                 const Text(
                                   "Add to Playlist",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
                                 const Spacer(),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Icon(
-                                    Icons.close,
-                                    color: AppColor.whiteColor,
-                                  ),
-                                )
+                                  child: const Icon(Icons.close, color: AppColor.whiteColor),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 16),
@@ -317,22 +290,15 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   if (nameController.text.trim().isNotEmpty) {
-                                    context.read<PostPlaylistCubit>().postPlaylist(
-                                          name: nameController.text,
-                                        );
+                                    context.read<PostPlaylistCubit>().postPlaylist(name: nameController.text);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.deepPurple,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
-                                child: const TextWidget(
-                                  text: "Create Playlist",
-                                  color: AppColor.whiteColor,
-                                ),
-                              )
+                                child: const TextWidget(text: "Create Playlist", color: AppColor.whiteColor),
+                              ),
                             ] else ...[
                               Flexible(
                                 child: ListView.builder(
@@ -341,10 +307,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                                   itemBuilder: (context, index) {
                                     final playlist = playlists?[index];
                                     return ListTile(
-                                      title: Text(
-                                        playlist?.name ?? "",
-                                        style: const TextStyle(color: Colors.white),
-                                      ),
+                                      title: Text(playlist?.name ?? "", style: const TextStyle(color: Colors.white)),
                                       trailing: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
@@ -352,22 +315,19 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                                             icon: const Icon(Icons.add, color: Colors.white),
                                             onPressed: () {
                                               context.read<AddSongInPlaylistCubit>().addSongInPlaylist(
-                                                    playlistId: playlist?.id ?? "",
-                                                    songId: songId,
-                                                  );
+                                                playlistId: playlist?.id ?? "",
+                                                songId: songId,
+                                              );
                                             },
                                           ),
                                           IconButton(
                                             onPressed: () {
                                               context.read<DeletePlaylistCubit>().deletePlaylist(
-                                                    musicId: playlist?.id ?? "",
-                                                  );
+                                                musicId: playlist?.id ?? "",
+                                              );
                                             },
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: AppColor.whiteColor,
-                                            ),
-                                          )
+                                            icon: const Icon(Icons.delete, color: AppColor.whiteColor),
+                                          ),
                                         ],
                                       ),
                                     );
@@ -393,23 +353,16 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   if (nameController.text.trim().isNotEmpty) {
-                                    context.read<PostPlaylistCubit>().postPlaylist(
-                                          name: nameController.text.trim(),
-                                        );
+                                    context.read<PostPlaylistCubit>().postPlaylist(name: nameController.text.trim());
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.deepPurple,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                 ),
-                                child: const TextWidget(
-                                  text: "Create & Add",
-                                  color: AppColor.whiteColor,
-                                ),
-                              )
-                            ]
+                                child: const TextWidget(text: "Create & Add", color: AppColor.whiteColor),
+                              ),
+                            ],
                           ],
                         );
                       }
@@ -417,10 +370,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
                       return const SizedBox(
                         height: 100,
                         child: Center(
-                          child: Text(
-                            "Something went wrong!",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                          child: Text("Something went wrong!", style: TextStyle(color: Colors.white)),
                         ),
                       );
                     },
@@ -457,10 +407,7 @@ class Controls extends StatelessWidget {
         IconButton(
           iconSize: 34,
           onPressed: onToggleShuffle,
-          icon: Icon(
-            Icons.shuffle,
-            color: isShuffling ? AppColor.blueColor : AppColor.whiteColor,
-          ),
+          icon: Icon(Icons.shuffle, color: isShuffling ? AppColor.blueColor : AppColor.whiteColor),
         ),
         IconButton(
           onPressed: audioPlayer.seekToPrevious,
@@ -504,16 +451,10 @@ class Controls extends StatelessWidget {
             }
             return Container(
               decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(30)),
                 color: AppColor.whiteColor,
               ),
-              child: const Icon(
-                Icons.play_arrow_outlined,
-                size: 40,
-                color: AppColor.blackColor,
-              ),
+              child: const Icon(Icons.play_arrow_outlined, size: 40, color: AppColor.blackColor),
             );
           },
         ),
@@ -530,8 +471,8 @@ class Controls extends StatelessWidget {
             loopMode == LoopMode.off
                 ? Icons.repeat
                 : loopMode == LoopMode.all
-                    ? Icons.repeat
-                    : Icons.repeat_one,
+                ? Icons.repeat
+                : Icons.repeat_one,
             color: loopMode == LoopMode.off ? AppColor.whiteColor : AppColor.blueColor,
           ),
         ),
@@ -541,11 +482,7 @@ class Controls extends StatelessWidget {
 }
 
 class PositionData {
-  const PositionData(
-    this.position,
-    this.bufferedPosition,
-    this.duration,
-  );
+  const PositionData(this.position, this.bufferedPosition, this.duration);
 
   final Duration position;
   final Duration bufferedPosition;
@@ -574,29 +511,18 @@ class MediaMetaData extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(
-          height: 30,
-        ),
+        const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: TextWidget(
-                text: title,
-                fontSize: 19,
-                textAlign: TextAlign.center,
-                fontWeight: FontWeight.w700,
-              ),
+              child: TextWidget(text: title, fontSize: 19, textAlign: TextAlign.center, fontWeight: FontWeight.w700),
             ),
           ],
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         TextWidget(text: artist),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
       ],
     );
   }
@@ -617,20 +543,14 @@ class _MusicVisualizerState extends State<MusicVisualizer> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    )..repeat(reverse: true);
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..repeat(reverse: true);
 
     _barAnimations = List.generate(
       5,
       (index) => Tween<double>(
         begin: 10.0,
         end: 50.0 + index * 5,
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      )),
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut)),
     );
   }
 
@@ -660,10 +580,7 @@ class _MusicVisualizerState extends State<MusicVisualizer> with SingleTickerProv
                 width: 8,
                 height: animation.value,
                 margin: const EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(4),
-                ),
+                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(4)),
               );
             },
           );

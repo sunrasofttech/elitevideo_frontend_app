@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -88,11 +89,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
         _currentPage = 0;
       }
 
-      _pageController.animateToPage(
-        _currentPage,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
+      _pageController.animateToPage(_currentPage, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
     });
   }
 
@@ -151,9 +148,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
         if (state is GetHighlightedContentErrorState && state.error.contains("Session expired. Please login again")) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (context) => const OnBoardingScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
             (route) => false,
           );
           return;
@@ -174,19 +169,13 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
           final seriesList = state.model.data?.series ?? [];
 
           if (movieList.isNotEmpty) {
-            _highlightedItems.addAll(
-              movieList.map((e) => HighlightedItem(type: 'movie', item: e)),
-            );
+            _highlightedItems.addAll(movieList.map((e) => HighlightedItem(type: 'movie', item: e)));
           }
           if (shortFilmsList.isNotEmpty) {
-            _highlightedItems.addAll(
-              shortFilmsList.map((e) => HighlightedItem(type: 'shortFilm', item: e)),
-            );
+            _highlightedItems.addAll(shortFilmsList.map((e) => HighlightedItem(type: 'shortFilm', item: e)));
           }
           if (seriesList.isNotEmpty) {
-            _highlightedItems.addAll(
-              seriesList.map((e) => HighlightedItem(type: 'series', item: e)),
-            );
+            _highlightedItems.addAll(seriesList.map((e) => HighlightedItem(type: 'series', item: e)));
           }
 
           if (_highlightedItems.isEmpty) return const SizedBox();
@@ -206,25 +195,18 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                     if (highlighted.type == 'movie') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieDetailScreen(id: data.id ?? ''),
-                        ),
+                        MaterialPageRoute(builder: (context) => MovieDetailScreen(id: data.id ?? '')),
                       );
                     } else if (highlighted.type == 'shortFilm') {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ShortFilmDetailScreen(id: data.id ?? ''),
-                        ),
+                        MaterialPageRoute(builder: (context) => ShortFilmDetailScreen(id: data.id ?? '')),
                       );
                     } else if (highlighted.type == 'series') {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => WebSeriesDetails(
-                            id: data.id ?? '',
-                            type: ContentType.series,
-                          ),
+                          builder: (context) => WebSeriesDetails(id: data.id ?? '', type: ContentType.series),
                         ),
                       );
                     }
@@ -240,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                           ),
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: NetworkImage("${data.coverImg}"),
+                            image: NetworkImage("${AppUrls.baseUrl}/${data.coverImg}"),
                           ),
                         ),
                       ),
@@ -300,19 +282,17 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => VideoDescrptionScreen(
-                                            model: data,
-                                            isTrailer: true,
-                                          ),
+                                          builder: (context) => VideoDescrptionScreen(model: data, isTrailer: true),
                                         ),
                                       );
                                     },
                                     child: TextWidget(
                                       text: 'Trailer'.tr(),
                                       style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 14,
-                                          color: const Color.fromRGBO(245, 253, 255, 1)),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        color: const Color.fromRGBO(245, 253, 255, 1),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -326,10 +306,10 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                                   text: highlighted.type == "movie"
                                       ? "${data.movieName ?? ""}"
                                       : highlighted.type == "series"
-                                          ? data?.seriesName ?? ""
-                                          : highlighted.type == "shortFilm"
-                                              ? data?.shortFilmTitle ?? ""
-                                              : "",
+                                      ? data?.seriesName ?? ""
+                                      : highlighted.type == "shortFilm"
+                                      ? data?.shortFilmTitle ?? ""
+                                      : "",
                                   fontSize: 19,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -371,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                                       ),
                                     ],
                                   ),
-                                ]
+                                ],
                               ],
                             ),
                             TextWidget(
@@ -401,9 +381,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
         if (state is GetContinueWatchingErrorState && state.error.contains("Session expired. Please login again")) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (context) => const OnBoardingScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
             (route) => false,
           );
           return;
@@ -419,10 +397,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [
-                        Color.fromRGBO(0, 0, 0, 0.6),
-                        Colors.transparent,
-                      ],
+                      colors: [Color.fromRGBO(0, 0, 0, 0.6), Colors.transparent],
                     ),
                   ),
                   child: Padding(
@@ -430,11 +405,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextWidget(
-                          text: "Continue Watching .".tr(),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
+                        TextWidget(text: "Continue Watching .".tr(), fontWeight: FontWeight.w600, fontSize: 16),
                         sb15h(),
                         SizedBox(
                           height: 200,
@@ -458,106 +429,108 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                                 onTap: () {
                                   if (data?.type == "movie") {
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MovieDetailScreen(
-                                            lastPosition: data?.currentTime,
-                                            id: data?.typeId ?? "",
-                                            // model: Movie(
-                                            //   viewCount: data?.content?.viewCount,
-                                            //   videoLink: data?.content?.videoLink,
-                                            //   description: data?.content?.description,
-                                            //   coverImg: data?.content?.coverImg,
-                                            //   genreId: data?.content?.genreId,
-                                            //   id: data?.content?.id,
-                                            //   isHighlighted: data?.content?.isHighlighted,
-                                            //   isMovieOnRent: data?.content?.isMovieOnRent,
-                                            //   isWatchlist: data?.content?.isWatchlist,
-                                            //   quality: data?.content?.quality,
-                                            //   showSubscription: data?.content?.showSubscription,
-                                            //   movieVideo: data?.content?.movieVideo,
-                                            //   movieTime: data?.content?.movieTime,
-                                            //   releasedBy: data?.content?.releasedBy,
-                                            //   releasedDate: data?.content?.releasedDate,
-                                            //   status: data?.content?.status,
-                                            //   updatedAt: data?.content?.updatedAt,
-                                            //   subtitle: data?.content?.subtitle,
-                                            //   movieName: data?.content?.movieName,
-                                            //   reportCount: data?.content?.reportCount,
-                                            //   createdAt: data?.content?.createdAt,
-                                            //   movieCategory: data?.content?.movieCategory,
-                                            //   movieLanguage: data?.content?.movieLanguage,
-                                            //   movieRentPrice: data?.content?.movieRentPrice,
-                                            //   posterImg: data?.content?.posterImg,
-                                            //   rentedTimeDays: data?.content?.rentedTimeDays,
-                                            //   trailorVideo: data?.content?.trailorVideo,
-                                            //   trailorVideoLink: data?.content?.trailorVideoLink,
-                                            //   movieAd: data?.ads != null && data!.ads!.isNotEmpty
-                                            //       ? data.ads!
-                                            //           .map((ad) => MovieAd(
-                                            //                 id: ad.id,
-                                            //                 videoAdId: ad.videoAdId,
-                                            //                 createdAt: ad.createdAt,
-                                            //                 movieId: ad.movieId,
-                                            //                 updatedAt: ad.updatedAt,
-                                            //                 videoAd: ad.videoAd,
-                                            //               ))
-                                            //           .toList()
-                                            //       : [],
-                                            // ),
-                                            //  isTrailer: false,
-                                          ),
-                                        ));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MovieDetailScreen(
+                                          lastPosition: data?.currentTime,
+                                          id: data?.typeId ?? "",
+                                          // model: Movie(
+                                          //   viewCount: data?.content?.viewCount,
+                                          //   videoLink: data?.content?.videoLink,
+                                          //   description: data?.content?.description,
+                                          //   coverImg: data?.content?.coverImg,
+                                          //   genreId: data?.content?.genreId,
+                                          //   id: data?.content?.id,
+                                          //   isHighlighted: data?.content?.isHighlighted,
+                                          //   isMovieOnRent: data?.content?.isMovieOnRent,
+                                          //   isWatchlist: data?.content?.isWatchlist,
+                                          //   quality: data?.content?.quality,
+                                          //   showSubscription: data?.content?.showSubscription,
+                                          //   movieVideo: data?.content?.movieVideo,
+                                          //   movieTime: data?.content?.movieTime,
+                                          //   releasedBy: data?.content?.releasedBy,
+                                          //   releasedDate: data?.content?.releasedDate,
+                                          //   status: data?.content?.status,
+                                          //   updatedAt: data?.content?.updatedAt,
+                                          //   subtitle: data?.content?.subtitle,
+                                          //   movieName: data?.content?.movieName,
+                                          //   reportCount: data?.content?.reportCount,
+                                          //   createdAt: data?.content?.createdAt,
+                                          //   movieCategory: data?.content?.movieCategory,
+                                          //   movieLanguage: data?.content?.movieLanguage,
+                                          //   movieRentPrice: data?.content?.movieRentPrice,
+                                          //   posterImg: data?.content?.posterImg,
+                                          //   rentedTimeDays: data?.content?.rentedTimeDays,
+                                          //   trailorVideo: data?.content?.trailorVideo,
+                                          //   trailorVideoLink: data?.content?.trailorVideoLink,
+                                          //   movieAd: data?.ads != null && data!.ads!.isNotEmpty
+                                          //       ? data.ads!
+                                          //           .map((ad) => MovieAd(
+                                          //                 id: ad.id,
+                                          //                 videoAdId: ad.videoAdId,
+                                          //                 createdAt: ad.createdAt,
+                                          //                 movieId: ad.movieId,
+                                          //                 updatedAt: ad.updatedAt,
+                                          //                 videoAd: ad.videoAd,
+                                          //               ))
+                                          //           .toList()
+                                          //       : [],
+                                          // ),
+                                          //  isTrailer: false,
+                                        ),
+                                      ),
+                                    );
                                   } else if (data?.type == "shortfilm") {
                                     // var datum = data?.content;
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ShortFilmDetailScreen(
-                                            // model: ShortFilm(
-                                            //   id: datum?.id,
-                                            //   shortFilmTitle: datum?.shortFilmTitle,
-                                            //   coverImg: datum?.coverImg,
-                                            //   createdAt: datum?.createdAt,
-                                            //   description: datum?.description,
-                                            //   genreId: datum?.genreId,
-                                            //   isHighlighted: datum?.isHighlighted,
-                                            //   isMovieOnRent: datum?.isMovieOnRent,
-                                            //   isWatchlist: datum?.isWatchlist,
-                                            //   movieCategory: datum?.movieCategory,
-                                            //   movieLanguage: datum?.movieLanguage,
-                                            //   movieRentPrice: datum?.movieRentPrice,
-                                            //   movieTime: datum?.movieTime,
-                                            //   posterImg: datum?.posterImg,
-                                            //   quality: datum?.quality,
-                                            //   releasedBy: datum?.releasedBy,
-                                            //   releasedDate: datum?.releasedDate.toString(),
-                                            //   rentedTimeDays: datum?.rentedTimeDays,
-                                            //   reportCount: datum?.reportCount,
-                                            //   shortVideo: datum?.shortVideo,
-                                            //   showSubscription: datum?.showSubscription,
-                                            //   status: datum?.status,
-                                            //   subtitle: datum?.subtitle,
-                                            //   viewCount: datum?.viewCount,
-                                            //   videoLink: datum?.videoLink,
-                                            //   updatedAt: datum?.updatedAt,
-                                            //   shortfilmAds: data?.ads != null && data!.ads!.isNotEmpty
-                                            //       ? data.ads!
-                                            //           .map((ad) => MovieAd(
-                                            //                 id: ad.id,
-                                            //                 videoAdId: ad.videoAdId,
-                                            //                 createdAt: ad.createdAt,
-                                            //                 movieId: ad.movieId,
-                                            //                 updatedAt: ad.updatedAt,
-                                            //                 videoAd: ad.videoAd,
-                                            //               ))
-                                            //           .toList()
-                                            //       : [],
-                                            // ),
-                                            id: data?.typeId ?? "",
-                                            lastPosition: data?.currentTime,
-                                          ),
-                                        ));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ShortFilmDetailScreen(
+                                          // model: ShortFilm(
+                                          //   id: datum?.id,
+                                          //   shortFilmTitle: datum?.shortFilmTitle,
+                                          //   coverImg: datum?.coverImg,
+                                          //   createdAt: datum?.createdAt,
+                                          //   description: datum?.description,
+                                          //   genreId: datum?.genreId,
+                                          //   isHighlighted: datum?.isHighlighted,
+                                          //   isMovieOnRent: datum?.isMovieOnRent,
+                                          //   isWatchlist: datum?.isWatchlist,
+                                          //   movieCategory: datum?.movieCategory,
+                                          //   movieLanguage: datum?.movieLanguage,
+                                          //   movieRentPrice: datum?.movieRentPrice,
+                                          //   movieTime: datum?.movieTime,
+                                          //   posterImg: datum?.posterImg,
+                                          //   quality: datum?.quality,
+                                          //   releasedBy: datum?.releasedBy,
+                                          //   releasedDate: datum?.releasedDate.toString(),
+                                          //   rentedTimeDays: datum?.rentedTimeDays,
+                                          //   reportCount: datum?.reportCount,
+                                          //   shortVideo: datum?.shortVideo,
+                                          //   showSubscription: datum?.showSubscription,
+                                          //   status: datum?.status,
+                                          //   subtitle: datum?.subtitle,
+                                          //   viewCount: datum?.viewCount,
+                                          //   videoLink: datum?.videoLink,
+                                          //   updatedAt: datum?.updatedAt,
+                                          //   shortfilmAds: data?.ads != null && data!.ads!.isNotEmpty
+                                          //       ? data.ads!
+                                          //           .map((ad) => MovieAd(
+                                          //                 id: ad.id,
+                                          //                 videoAdId: ad.videoAdId,
+                                          //                 createdAt: ad.createdAt,
+                                          //                 movieId: ad.movieId,
+                                          //                 updatedAt: ad.updatedAt,
+                                          //                 videoAd: ad.videoAd,
+                                          //               ))
+                                          //           .toList()
+                                          //       : [],
+                                          // ),
+                                          id: data?.typeId ?? "",
+                                          lastPosition: data?.currentTime,
+                                        ),
+                                      ),
+                                    );
                                   } else if (data?.type == "season_episode") {
                                     Navigator.push(
                                       context,
@@ -578,15 +551,17 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                                             videoLink: data?.content?.videoLink,
                                             episodeAd: data?.ads != null && data!.ads!.isNotEmpty
                                                 ? data.ads!
-                                                    .map((ad) => MovieAd(
+                                                      .map(
+                                                        (ad) => MovieAd(
                                                           id: ad.id,
                                                           videoAdId: ad.videoAdId,
                                                           createdAt: ad.createdAt,
                                                           movieId: ad.movieId,
                                                           updatedAt: ad.updatedAt,
                                                           videoAd: ad.videoAd,
-                                                        ))
-                                                    .toList()
+                                                        ),
+                                                      )
+                                                      .toList()
                                                 : [],
                                           ),
                                           lastPosition: data?.currentTime,
@@ -608,8 +583,8 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                                             margin: const EdgeInsets.only(right: 12),
                                             child: CustomCachedCard(
                                               imageUrl: data?.type == "season_episode"
-                                                  ? "${data?.content?.coverImg}"
-                                                  : "${data?.content?.posterImg}",
+                                                  ? "${AppUrls.baseUrl}/${data?.content?.coverImg}"
+                                                  : "${AppUrls.baseUrl}/${data?.content?.posterImg}",
                                               width: 250,
                                               height: 160,
                                             ),
@@ -638,8 +613,8 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                                         text: data?.type == "shortfilm"
                                             ? data?.content?.shortFilmTitle ?? 'N/A'
                                             : data?.type == "movie"
-                                                ? data?.content?.movieName ?? 'N/A'
-                                                : data?.content?.episodeName,
+                                            ? data?.content?.movieName ?? 'N/A'
+                                            : data?.content?.episodeName,
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 13,
@@ -649,7 +624,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                                       Text(
                                         _formatDuration(Duration(seconds: data?.currentTime ?? 0)),
                                         style: const TextStyle(color: Colors.grey, fontSize: 11),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -677,14 +652,10 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
         context.read<GetSettingCubit>().getSetting();
         context.read<GetSubscriptionCubit>().getAllSub();
       },
-      loading: Center(
-        child: Lottie.asset(AppImages.loadingLottie),
-      ),
+      loading: Center(child: Lottie.asset(AppImages.loadingLottie)),
       builder: (context, state) {
         if (state is GetAllMovieLoadingState) {
-          return Center(
-            child: Lottie.asset(AppImages.loadingLottie),
-          );
+          return Center(child: Lottie.asset(AppImages.loadingLottie));
         }
 
         if (state is GetAllMovieLaodedState) {
@@ -693,11 +664,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextWidget(
-                  text: "Top Movies".tr(),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
+                TextWidget(text: "Top Movies".tr(), fontWeight: FontWeight.w600, fontSize: 16),
                 sb15h(),
                 SizedBox(
                   height: state.model.data?.movies?.isEmpty ?? true ? 10 : 190,
@@ -711,11 +678,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => MovieDetailScreen(
-                                id: data?.id ?? "",
-                              ),
-                            ),
+                            MaterialPageRoute(builder: (context) => MovieDetailScreen(id: data?.id ?? "")),
                           );
                         },
                         child: Column(
@@ -728,7 +691,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CustomCachedCard(
-                                  imageUrl: "${data?.posterImg}",
+                                  imageUrl: "${AppUrls.baseUrl}/${data?.posterImg}",
                                   width: 250,
                                   height: 160,
                                 ),
@@ -769,11 +732,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextWidget(
-                  text: "Short Film".tr(),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
+                TextWidget(text: "Short Film".tr(), fontWeight: FontWeight.w600, fontSize: 16),
                 sb15h(),
                 SizedBox(
                   height: state.model.data?.isEmpty ?? true ? 10 : 190,
@@ -787,11 +746,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => ShortFilmDetailScreen(
-                                id: data?.id ?? "",
-                              ),
-                            ),
+                            MaterialPageRoute(builder: (context) => ShortFilmDetailScreen(id: data?.id ?? "")),
                           );
                         },
                         child: Column(
@@ -804,7 +759,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CustomCachedCard(
-                                  imageUrl: "${data?.posterImg}",
+                                  imageUrl: "${AppUrls.baseUrl}/${data?.posterImg}",
                                   width: 250,
                                   height: 160,
                                 ),
@@ -842,9 +797,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
         if (state is GetAllSeriesErrorState && state.error.contains("Session expired. Please login again")) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (context) => const OnBoardingScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
             (route) => false,
           );
           return;
@@ -857,11 +810,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextWidget(
-                  text: "Web Series".tr(),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
+                TextWidget(text: "Web Series".tr(), fontWeight: FontWeight.w600, fontSize: 16),
                 sb15h(),
                 SizedBox(
                   height: state.model.data?.isEmpty ?? true ? 10 : 190,
@@ -876,10 +825,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WebSeriesDetails(
-                                id: data?.id ?? "",
-                                type: ContentType.series,
-                              ),
+                              builder: (context) => WebSeriesDetails(id: data?.id ?? "", type: ContentType.series),
                             ),
                           );
                           context.read<GetLiveTvCubit>().getAllLiveCategory();
@@ -894,7 +840,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CustomCachedCard(
-                                  imageUrl: "${data?.posterImg}",
+                                  imageUrl: "${AppUrls.baseUrl}/${data?.posterImg}",
                                   width: 250,
                                   height: 160,
                                 ),
@@ -932,9 +878,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
         if (state is GetLiveTvErrorState && state.error.contains("Session expired. Please login again")) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (context) => const OnBoardingScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
             (route) => false,
           );
           return;
@@ -947,11 +891,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextWidget(
-                  text: "Live TV".tr(),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
+                TextWidget(text: "Live TV".tr(), fontWeight: FontWeight.w600, fontSize: 16),
                 sb15h(),
                 SizedBox(
                   height: state.model.data?.channels?.isEmpty ?? true ? 0 : 190,
@@ -965,12 +905,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => LiveTvDesc(
-                                model: data,
-                                isTrailer: false,
-                              ),
-                            ),
+                            MaterialPageRoute(builder: (context) => LiveTvDesc(model: data, isTrailer: false)),
                           );
                         },
                         child: Column(
@@ -983,7 +918,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CustomCachedCard(
-                                  imageUrl: "${data?.posterImg}",
+                                  imageUrl: "${AppUrls.baseUrl}/${data?.posterImg}",
                                   width: 250,
                                   height: 160,
                                 ),
@@ -1032,9 +967,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
         if (state is GetAllTVSeriesErrorState && state.error.contains("Session expired. Please login again")) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (context) => const OnBoardingScreen(),
-            ),
+            MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
             (route) => false,
           );
           return;
@@ -1048,11 +981,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextWidget(
-                  text: "Tv Show".tr(),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
+                TextWidget(text: "Tv Show".tr(), fontWeight: FontWeight.w600, fontSize: 16),
                 sb15h(),
                 SizedBox(
                   height: state.model.data?.isEmpty ?? true ? 10 : 190,
@@ -1067,10 +996,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WebSeriesDetails(
-                                id: data?.id ?? "",
-                                type: ContentType.series,
-                              ),
+                              builder: (context) => WebSeriesDetails(id: data?.id ?? "", type: ContentType.series),
                             ),
                           );
                           context.read<GetLiveTvCubit>().getAllLiveCategory();
@@ -1084,11 +1010,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                               margin: const EdgeInsets.only(right: 12),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: CustomCachedCard(
-                                  imageUrl: "${data?.posterImg}",
-                                  width: 250,
-                                  height: 160,
-                                ),
+                                child: CustomCachedCard(imageUrl: "${AppUrls.baseUrl}/${data?.posterImg}", width: 250, height: 160),
                               ),
                             ),
                             sb5h(),
@@ -1118,14 +1040,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
   }
 
   Widget _categoryBar() {
-    final categories = [
-      'For You'.tr(),
-      'Movie'.tr(),
-      'Short Film'.tr(),
-      'Series'.tr(),
-      'Tv Show'.tr(),
-      'Live TV'.tr(),
-    ];
+    final categories = ['For You'.tr(), 'Movie'.tr(), 'Short Film'.tr(), 'Series'.tr(), 'Tv Show'.tr(), 'Live TV'.tr()];
 
     return Container(
       height: 45,
@@ -1152,10 +1067,7 @@ class _HomeScreenState extends State<HomeScreen> with Utility {
                     Container(
                       width: 10,
                       height: 10,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
+                      decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                       margin: const EdgeInsets.only(right: 6),
                     ),
                   TextWidget(

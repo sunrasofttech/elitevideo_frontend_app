@@ -27,9 +27,7 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await EasyLocalization.ensureInitialized();
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await JustAudioBackground.init(
       androidNotificationChannelId: "com.ryanheise.bg_demo.channel.audio",
       androidNotificationChannelName: "Audio playback",
@@ -41,11 +39,7 @@ void main() async {
   }
   runApp(
     EasyLocalization(
-      supportedLocales: const [
-        Locale('en', 'US'),
-        Locale('hi', 'US'),
-        Locale('mr', 'IN'),
-      ],
+      supportedLocales: const [Locale('en', 'US'), Locale('hi', 'US'), Locale('mr', 'IN')],
       path: 'asset/translations',
       fallbackLocale: const Locale('en', 'US'),
       child: const MyApp(),
