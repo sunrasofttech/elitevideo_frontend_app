@@ -55,7 +55,7 @@ class _ShortFlimDescrptionScreenState extends State<ShortFlimDescrptionScreen> w
       await Dio().download(
         widget.model.shortVideo?.contains("https") ?? false
             ? "${widget.model.shortVideo}"
-            : "https://${widget.model.shortVideo}",
+            : "${AppUrls.baseUrl}/${widget.model.shortVideo}",
         videoFilePath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
@@ -162,11 +162,11 @@ class _ShortFlimDescrptionScreenState extends State<ShortFlimDescrptionScreen> w
                       audioUrl: (widget.model.shortVideo == null && widget.model.shortVideo!.isEmpty)
                           ? "${widget.model.videoLink}"
                           : widget.model.shortVideo?.contains("https") ?? false
-                              ? "${widget.model.shortVideo}"
-                              : "https://${widget.model.shortVideo}",
+                              ? "${AppUrls.baseUrl}/${widget.model.shortVideo}"
+                              : "${AppUrls.baseUrl}/${widget.model.shortVideo}",
                       handleOnChanged: (int watchTime, {bool isWatched = false}) {
                         final videoUrl = (widget.model.shortVideo?.isNotEmpty == true
-                            ? "https://${widget.model.shortVideo}"
+                            ? "${AppUrls.baseUrl}/${widget.model.shortVideo}"
                             : widget.model.videoLink ?? "");
                         log("videoUrl=====> $videoUrl");
                         if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')) {

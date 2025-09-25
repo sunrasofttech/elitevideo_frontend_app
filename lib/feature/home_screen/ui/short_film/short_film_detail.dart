@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -65,10 +66,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
     context.read<GetShortFilmCastcrewCubit>().getCastCrew(movieId: widget.id);
     context.read<GetShortFilmRatingByIdCubit>().getShortFilmRating(widget.id);
     context.read<GetShortfilmByIdCubit>().getShortFilm(widget.id);
-    context.read<CheckRentalCubit>().checkRental(
-          type: ContentType.shortfilm,
-          typeId: widget.id,
-        );
+    context.read<CheckRentalCubit>().checkRental(type: ContentType.shortfilm, typeId: widget.id);
     _checkIfDownloaded();
     super.initState();
   }
@@ -91,7 +89,9 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
       final imageFilePath = '${dir.path}/$imageFileName';
 
       await Dio().download(
-        movie.shortVideo?.contains("https") ?? false ? "${movie.shortVideo}" : "https://${movie.shortVideo}",
+        movie.shortVideo?.contains("https") ?? false
+            ? "${AppUrls.baseUrl}/${movie.shortVideo}"
+            : "${AppUrls.baseUrl}/${movie.shortVideo}",
         videoFilePath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
@@ -160,14 +160,12 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
         child: BlocConsumer<GetShortfilmByIdCubit, GetShortfilmByIdState>(
           listener: (context, state) {
             if (state is GetShortfilmByIdLoadedState) {
-              shouldShowDownload = widget.isFromRental == true ||
+              shouldShowDownload =
+                  widget.isFromRental == true ||
                   (state.model.data?.isMovieOnRent == false &&
                       (!isUserSubscribed && state.model.data?.showSubscription == true) == false);
               setState(() {});
-              context.read<GetLikeCubit>().getLike(
-                    typeId: widget.id,
-                    type: ContentType.shortfilm,
-                  );
+              context.read<GetLikeCubit>().getLike(typeId: widget.id, type: ContentType.shortfilm);
 
               // if (state.model.data?.isMovieOnRent == false) {
               //   if (!isUserSubscribed && state.model.data?.showSubscription == true) {
@@ -193,13 +191,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
               return SizedBox(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Lottie.asset(
-                    AppImages.loadingLottie,
-                    height: 100,
-                    width: 100,
-                  ),
-                ),
+                child: Center(child: Lottie.asset(AppImages.loadingLottie, height: 100, width: 100)),
               );
             }
             if (state is GetShortfilmByIdLoadedState) {
@@ -219,9 +211,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                     bottomLeft: Radius.circular(12),
                                     bottomRight: Radius.circular(12),
                                   ),
-                                  image: DecorationImage(
-                                    image: NetworkImage("${model?.coverImg}"),
-                                  ),
+                                  image: DecorationImage(image: NetworkImage("${AppUrls.baseUrl}/${model?.coverImg}")),
                                 ),
                               ),
                               BlocListener<PostRentCubit, PostRentState>(
@@ -233,7 +223,10 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
 
                                   if (state is PostRentLoadedState) {
                                     AppToast.showSuccess(
-                                        context, "Rent", "Rented Sucessfully ✅ Check Profile Section to Watch");
+                                      context,
+                                      "Rent",
+                                      "Rented Sucessfully ✅ Check Profile Section to Watch",
+                                    );
                                   }
                                 },
                                 child: BlocBuilder<GetSettingCubit, GetSettingState>(
@@ -245,16 +238,15 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                         text: widget.isFromRental
                                             ? 'Watch Now'.tr()
                                             : (model?.isMovieOnRent == true
-                                                ? 'Rent \u{20B9}${model?.movieRentPrice}'.tr()
-                                                : 'Watch Now !'.tr()),
+                                                  ? 'Rent \u{20B9}${model?.movieRentPrice}'.tr()
+                                                  : 'Watch Now !'.tr()),
                                         onTap: () {
                                           if (widget.isFromRental) {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => ShortFlimDescrptionScreen(
-                                                  model: model ?? ShortFilm(),
-                                                ),
+                                                builder: (context) =>
+                                                    ShortFlimDescrptionScreen(model: model ?? ShortFilm()),
                                               ),
                                             );
                                             return;
@@ -264,13 +256,14 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                             var day = model?.rentedTimeDays;
                                             if (day != null) {
                                               final now = DateTime.now();
-                                              final validTill =
-                                                  now.add(Duration(days: int.tryParse(day.toString()) ?? 0));
+                                              final validTill = now.add(
+                                                Duration(days: int.tryParse(day.toString()) ?? 0),
+                                              );
                                               validityDate = DateFormat('yyyy-MM-dd').format(validTill);
                                             }
-                                      
+
                                             log("Validate Date : $validityDate");
-                                      
+
                                             if (settingState is GetSettingLoadedState) {
                                               log("settingState ${settingState.model.setting?.paymentType}");
                                               if (settingState.model.setting?.paymentType == "Free") {
@@ -281,9 +274,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) => RazorpayScreen(
-                                                      amount: int.parse(
-                                                        state.model.data?.movieRentPrice ?? "",
-                                                      ),
+                                                      amount: int.parse(state.model.data?.movieRentPrice ?? ""),
                                                       subscriptionId: "",
                                                       razorPayKey: settingState.model.setting?.razorpayKey ?? "",
                                                       isSubscription: false,
@@ -295,35 +286,34 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                                 );
                                               } else if (settingState.model.setting?.paymentType == "Cashfree") {
                                                 Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => CashFreeScreen(
-                                                        amount: int.tryParse(
-                                                              state.model.data?.movieRentPrice ?? "",
-                                                            ) ??
-                                                            0,
-                                                        subscriptionId: "",
-                                                        shortFilmId: widget.id,
-                                                        isSubscription: false,
-                                                        appId: settingState.model.setting?.cashfreeClientId,
-                                                        secrectId: settingState.model.setting?.cashfreeClientSecretKey,
-                                                        formattedDate: validityDate.toString(),
-                                                      ),
-                                                    ));
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => CashFreeScreen(
+                                                      amount: int.tryParse(state.model.data?.movieRentPrice ?? "") ?? 0,
+                                                      subscriptionId: "",
+                                                      shortFilmId: widget.id,
+                                                      isSubscription: false,
+                                                      appId: settingState.model.setting?.cashfreeClientId,
+                                                      secrectId: settingState.model.setting?.cashfreeClientSecretKey,
+                                                      formattedDate: validityDate.toString(),
+                                                    ),
+                                                  ),
+                                                );
                                               } else if (settingState.model.setting?.paymentType == "UPI") {
                                                 Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => UPIIntentScreen(
-                                                        amount: state.model.data?.movieRentPrice ?? "",
-                                                        subscriptionId: "",
-                                                        isSubscription: false,
-                                                        upiId: settingState.model.setting?.adminUpi ?? "",
-                                                        shortFilmId: widget.id,
-                                                        upiName: settingState.model.setting?.authorName ?? "",
-                                                        formattedDate: validityDate.toString(),
-                                                      ),
-                                                    ));
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => UPIIntentScreen(
+                                                      amount: state.model.data?.movieRentPrice ?? "",
+                                                      subscriptionId: "",
+                                                      isSubscription: false,
+                                                      upiId: settingState.model.setting?.adminUpi ?? "",
+                                                      shortFilmId: widget.id,
+                                                      upiName: settingState.model.setting?.authorName ?? "",
+                                                      formattedDate: validityDate.toString(),
+                                                    ),
+                                                  ),
+                                                );
                                               } else if (settingState.model.setting?.paymentType == "PhonePe") {
                                                 // Navigator.push(
                                                 //     context,
@@ -339,7 +329,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                                 //     ));
                                               }
                                             }
-                                      
+
                                             // context.read<PostRentCubit>().postRent(
                                             //       cost: model?.movieRentPrice,
                                             //       shortFilmId: model?.id,
@@ -348,19 +338,17 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                             //     );
                                             return;
                                           }
-                                      
+
                                           if ((model?.videoLink == null || model!.videoLink!.isEmpty) &&
                                               (model?.shortVideo == null || model!.shortVideo!.isEmpty)) {
                                             AppToast.showError(context, "!", "No Short Film Uploaded");
                                             return;
                                           }
-                                      
+
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => ShortFlimDescrptionScreen(
-                                                model: model,
-                                              ),
+                                              builder: (context) => ShortFlimDescrptionScreen(model: model),
                                             ),
                                           );
                                         },
@@ -372,77 +360,72 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                             ],
                           )
                         : (!isUserSubscribed && state.model.data?.showSubscription == true)
-                            ? Column(
+                        ? Column(
+                            children: [
+                              Stack(
                                 children: [
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        height: MediaQuery.of(context).size.height * 0.5,
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(12),
-                                            bottomRight: Radius.circular(12),
-                                          ),
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage("${model?.coverImg}"),
-                                          ),
-                                        ),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height * 0.5,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(
+                                        bottomLeft: Radius.circular(12),
+                                        bottomRight: Radius.circular(12),
                                       ),
-                                      const Positioned(
-                                        top: 10,
-                                        left: 10,
-                                        child: CustomBackButton(),
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage("${AppUrls.baseUrl}/${model?.coverImg}"),
                                       ),
-                                    ],
-                                  ),
-                                  sb15h(),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: GradientButton(
-                                      height: 48,
-                                      text: 'Subscribe'.tr(),
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => const SubscriptionScreen(),
-                                            ));
-                                      },
                                     ),
                                   ),
+                                  const Positioned(top: 10, left: 10, child: CustomBackButton()),
                                 ],
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  color: Colors.black,
-                                  height: MediaQuery.of(context).size.height * 0.3,
-                                  child: CustomVideoPlayer(
-                                    lastPosition: widget.lastPosition,
-                                    ads: model?.shortfilmAds,
-                                    audioUrl: model?.shortVideo?.contains("https") ?? false
-                                        ? "${model?.shortVideo}"
-                                        : "https://${model?.shortVideo}",
-                                    handleOnChanged: (int watchTime, {bool isWatched = false}) {
-                                      final videoUrl = (model?.shortVideo?.isNotEmpty == true
-                                          ? "https://${model?.shortVideo}"
-                                          : model?.videoLink ?? "");
-                                      log("videoUrl=====> $videoUrl");
-                                      if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')) {
-                                        return;
-                                      }
-                                      _watchingCubit?.postContinueWatching(
-                                        contentType: ContentType.shortfilm,
-                                        typeId: widget.id,
-                                        currentTime: watchTime,
-                                        isWatched: isWatched,
-                                      );
-                                    },
-                                  ),
+                              ),
+                              sb15h(),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GradientButton(
+                                  height: 48,
+                                  text: 'Subscribe'.tr(),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const SubscriptionScreen()),
+                                    );
+                                  },
                                 ),
                               ),
+                            ],
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              color: Colors.black,
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              child: CustomVideoPlayer(
+                                lastPosition: widget.lastPosition,
+                                ads: model?.shortfilmAds,
+                                audioUrl: model?.shortVideo?.contains("https") ?? false
+                                    ? "${AppUrls.baseUrl}/${model?.shortVideo}"
+                                    : "${AppUrls.baseUrl}/${model?.shortVideo}",
+                                handleOnChanged: (int watchTime, {bool isWatched = false}) {
+                                  final videoUrl = (model?.shortVideo?.isNotEmpty == true
+                                      ? "${AppUrls.baseUrl}/${model?.shortVideo}"
+                                      : model?.videoLink ?? "");
+                                  log("videoUrl=====> $videoUrl");
+                                  if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')) {
+                                    return;
+                                  }
+                                  _watchingCubit?.postContinueWatching(
+                                    contentType: ContentType.shortfilm,
+                                    typeId: widget.id,
+                                    currentTime: watchTime,
+                                    isWatched: isWatched,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
                     // Container(
                     //   height: MediaQuery.of(context).size.height * 0.5,
                     //   decoration: BoxDecoration(
@@ -733,9 +716,9 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                           child: GestureDetector(
                             onTap: () {
                               context.read<PostWatchlistCubit>().postWatchList(
-                                    shortfilmId: widget.id,
-                                    type: ContentType.shortfilm,
-                                  );
+                                shortfilmId: widget.id,
+                                type: ContentType.shortfilm,
+                              );
                             },
                             child: Column(
                               children: [
@@ -743,15 +726,13 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                   color: AppColor.whiteColor,
                                   onPressed: () {
                                     context.read<PostWatchlistCubit>().postWatchList(
-                                          shortfilmId: widget.id,
-                                          type: ContentType.shortfilm,
-                                        );
+                                      shortfilmId: widget.id,
+                                      type: ContentType.shortfilm,
+                                    );
                                   },
                                   icon: const Icon(Icons.add),
                                 ),
-                                TextWidget(
-                                  text: "Add To WatchList".tr(),
-                                )
+                                TextWidget(text: "Add To WatchList".tr()),
                               ],
                             ),
                           ),
@@ -765,14 +746,9 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                 final link = "https://bigcinema.com?type=${ContentType.shortfilm}&id=$movieId";
                                 Share.share("Watch this Short Film on ${AppString.appName} 🎬\n$link");
                               },
-                              icon: const Icon(
-                                Icons.share,
-                                size: 20,
-                              ),
+                              icon: const Icon(Icons.share, size: 20),
                             ),
-                            TextWidget(
-                              text: "Share".tr(),
-                            )
+                            TextWidget(text: "Share".tr()),
                           ],
                         ),
                         Column(
@@ -855,7 +831,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                 ),
                               ],
                             ),
-                            TextWidget(text: _isDownloading ? "Dowloading" : "Download".tr())
+                            TextWidget(text: _isDownloading ? "Dowloading" : "Download".tr()),
                           ],
                         ),
                       ],
@@ -939,9 +915,9 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                                     rating = ratingvalue;
                                                   });
                                                   context.read<ShortFilmRateCubit>().postShortFilmRate(
-                                                        movieId: model?.id ?? "",
-                                                        rating: ratingvalue.toString(),
-                                                      );
+                                                    movieId: model?.id ?? "",
+                                                    rating: ratingvalue.toString(),
+                                                  );
                                                 },
                                                 initialRating: rating,
                                                 allowHalfRating: true,
@@ -956,10 +932,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                             ],
                                           ),
                                           sb5h(),
-                                          TextWidget(
-                                            text: "From ${userCount} users",
-                                            color: AppColor.textGreyColor,
-                                          ),
+                                          TextWidget(text: "From $userCount users", color: AppColor.textGreyColor),
                                         ],
                                       );
                                     }
@@ -976,18 +949,14 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                           BlocBuilder<GetShortFilmCastcrewCubit, GetShortFilmCastcrewState>(
                             builder: (context, state) {
                               if (state is GetShortFilmCastcrewLoadingState) {
-                                return const Center(
-                                  child: CustomCircularProgressIndicator(),
-                                );
+                                return const Center(child: CustomCircularProgressIndicator());
                               }
 
                               if (state is GetShortFilmCastcrewLoadedState) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    TextWidget(
-                                      text: "Cast".tr(),
-                                    ),
+                                    TextWidget(text: "Cast".tr()),
                                     sb10h(),
                                     state.model.data?.isEmpty ?? true
                                         ? TextWidget(text: "No Cast Crew Avaliable".tr())
@@ -1006,9 +975,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                               var data = state.model.data?[index];
                                               return Container(
                                                 decoration: const BoxDecoration(
-                                                  borderRadius: BorderRadius.all(
-                                                    Radius.circular(30),
-                                                  ),
+                                                  borderRadius: BorderRadius.all(Radius.circular(30)),
                                                   gradient: LinearGradient(
                                                     colors: [
                                                       Color.fromRGBO(233, 233, 233, 1),
@@ -1036,7 +1003,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                                         backgroundColor: Colors.white,
                                                         child: ClipOval(
                                                           child: Image.network(
-                                                            data?.profileImg ?? '',
+                                                            "${AppUrls.baseUrl}/${data?.profileImg ?? ''}",
                                                             width: 50,
                                                             height: 50,
                                                             fit: BoxFit.cover,
@@ -1071,7 +1038,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                                           ),
                                                         ],
                                                       ),
-                                                    )
+                                                    ),
                                                   ],
                                                 ),
                                               );
@@ -1151,9 +1118,7 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                           // sb10h(),
                           Center(
                             child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColor.redColor,
-                              ),
+                              style: ElevatedButton.styleFrom(backgroundColor: AppColor.redColor),
                               child: TextWidget(text: 'Report'.tr()),
                               onPressed: () {
                                 showDialog(
@@ -1175,69 +1140,63 @@ class _ShortFilmDetailScreenState extends State<ShortFilmDetailScreen> with Util
                                         child: SingleChildScrollView(
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: StatefulBuilder(builder: (context, setState) {
-                                              return Column(
-                                                children: [
-                                                  sb10h(),
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      sb20w(),
-                                                      TextWidget(
-                                                        text: "Report".tr(),
-                                                        fontSize: 15,
-                                                      ),
-                                                      IconButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(context);
-                                                        },
-                                                        icon: const Icon(
-                                                          Icons.close,
-                                                          color: AppColor.whiteColor,
+                                            child: StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return Column(
+                                                  children: [
+                                                    sb10h(),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        sb20w(),
+                                                        TextWidget(text: "Report".tr(), fontSize: 15),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                          icon: const Icon(Icons.close, color: AppColor.whiteColor),
                                                         ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  sb10h(),
-                                                  Wrap(
-                                                    spacing: 10,
-                                                    children: reportReasons.map((reason) {
-                                                      return ChoiceChip(
-                                                        label: Text(reason),
-                                                        selected: selectedReason == reason,
-                                                        onSelected: (selected) {
-                                                          setState(() {
-                                                            selectedReason = selected ? reason : null;
-                                                          });
-                                                        },
-                                                        selectedColor: AppColor.redColor,
-                                                        backgroundColor: Colors.grey.shade800,
-                                                        iconTheme: const IconThemeData(color: AppColor.whiteColor),
-                                                        labelStyle: const TextStyle(color: AppColor.whiteColor),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                  sb20h(),
-                                                  ElevatedButton(
-                                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                                    onPressed: () {
-                                                      if (selectedReason == null) {
-                                                        AppToast.showError(context, "Reason", "Select reason");
-                                                        return;
-                                                      }
-                                                      context.read<PostReportCubit>().report(
-                                                            contentId: model?.id ?? "",
-                                                            contentType: ContentType.shortfilm,
-                                                            reason: selectedReason,
-                                                          );
-                                                    },
-                                                    child: TextWidget(
-                                                      text: "Report".tr(),
+                                                      ],
                                                     ),
-                                                  )
-                                                ],
-                                              );
-                                            }),
+                                                    sb10h(),
+                                                    Wrap(
+                                                      spacing: 10,
+                                                      children: reportReasons.map((reason) {
+                                                        return ChoiceChip(
+                                                          label: Text(reason),
+                                                          selected: selectedReason == reason,
+                                                          onSelected: (selected) {
+                                                            setState(() {
+                                                              selectedReason = selected ? reason : null;
+                                                            });
+                                                          },
+                                                          selectedColor: AppColor.redColor,
+                                                          backgroundColor: Colors.grey.shade800,
+                                                          iconTheme: const IconThemeData(color: AppColor.whiteColor),
+                                                          labelStyle: const TextStyle(color: AppColor.whiteColor),
+                                                        );
+                                                      }).toList(),
+                                                    ),
+                                                    sb20h(),
+                                                    ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                                      onPressed: () {
+                                                        if (selectedReason == null) {
+                                                          AppToast.showError(context, "Reason", "Select reason");
+                                                          return;
+                                                        }
+                                                        context.read<PostReportCubit>().report(
+                                                          contentId: model?.id ?? "",
+                                                          contentType: ContentType.shortfilm,
+                                                          reason: selectedReason,
+                                                        );
+                                                      },
+                                                      child: TextWidget(text: "Report".tr()),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
                                           ),
                                         ),
                                       ),

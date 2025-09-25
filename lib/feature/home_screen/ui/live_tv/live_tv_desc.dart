@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:elite/constant/app_colors.dart';
@@ -76,7 +77,7 @@ class _LiveTvDescState extends State<LiveTvDesc> with Utility {
                                 bottomRight: Radius.circular(12),
                               ),
                               image: DecorationImage(
-                                image: NetworkImage("${widget.model?.coverImg}"),
+                                image: NetworkImage("${AppUrls.baseUrl}/${widget.model?.coverImg}"),
                               ),
                             ),
                           ),

@@ -67,7 +67,7 @@ class _AudioPlayerScreenState extends State<AudioPlayerScreen> {
           Uri.parse(
             music.songFile?.contains('https') ?? false
                 ? "${AppUrls.baseUrl}/${music.songFile}"
-                : "https://${music.songFile}",
+                : "${AppUrls.baseUrl}/${music.songFile}",
           ),
           tag: MediaItem(
             id: music.id ?? "",

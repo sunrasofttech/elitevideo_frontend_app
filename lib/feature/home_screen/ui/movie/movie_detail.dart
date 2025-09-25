@@ -69,10 +69,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     super.dispose();
   }
 
@@ -88,7 +85,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
       final imageFilePath = '${dir.path}/$imageFileName';
 
       await Dio().download(
-        movie.movieVideo?.contains("https") ?? false ? "${movie.movieVideo}" : "https://${movie.movieVideo}",
+        "${AppUrls.baseUrl}/${movie.movieVideo}",
         videoFilePath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
@@ -141,19 +138,13 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
     context.read<GetCastCrewCubit>().getCastCrew(movieId: widget.id);
     context.read<GetMovieByIdCubit>().getMovie(widget.id);
     _checkIfDownloaded();
-    context.read<CheckRentalCubit>().checkRental(
-          type: ContentType.movie,
-          typeId: widget.id,
-        );
+    context.read<CheckRentalCubit>().checkRental(type: ContentType.movie, typeId: widget.id);
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    context.read<CheckRentalCubit>().checkRental(
-          type: ContentType.movie,
-          typeId: widget.id,
-        );
+    context.read<CheckRentalCubit>().checkRental(type: ContentType.movie, typeId: widget.id);
     _watchingCubit = context.read<PostContinueWatchingCubit>();
 
     super.didChangeDependencies();
@@ -180,23 +171,16 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
           child: BlocConsumer<GetMovieByIdCubit, GetMovieByIdState>(
             listener: (context, state) {
               if (state is GetMovieByIdLoadedState) {
-                shouldShowDownload = widget.isFromRental == true ||
+                shouldShowDownload =
+                    widget.isFromRental == true ||
                     (state.model.movie?.isMovieOnRent == false &&
                         (!isUserSubscribed && state.model.movie?.showSubscription == true) == false);
                 setState(() {});
                 context.read<GetAvgRatingCubit>().getRate(widget.id);
-                context.read<GetLikeCubit>().getLike(
-                      typeId: widget.id,
-                      type: ContentType.movie,
-                    );
+                context.read<GetLikeCubit>().getLike(typeId: widget.id, type: ContentType.movie);
                 if (state.model.movie?.isMovieOnRent == false) {
                   if (!isUserSubscribed && state.model.movie?.showSubscription == true) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SubscriptionScreen(),
-                      ),
-                    );
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SubscriptionScreen()));
                     return;
                   }
                 }
@@ -212,13 +196,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                 return SizedBox(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
-                  child: Center(
-                    child: Lottie.asset(
-                      AppImages.loadingLottie,
-                      height: 100,
-                      width: 100,
-                    ),
-                  ),
+                  child: Center(child: Lottie.asset(AppImages.loadingLottie, height: 100, width: 100)),
                 );
               }
               if (state is GetMovieByIdLoadedState) {
@@ -245,7 +223,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                       bottomRight: Radius.circular(12),
                                     ),
                                     image: DecorationImage(
-                                      image: NetworkImage("${model?.coverImg}"),
+                                      image: NetworkImage("${AppUrls.baseUrl}/${model?.coverImg}"),
                                     ),
                                   ),
                                 ),
@@ -260,7 +238,10 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
 
                                         if (state is PostRentLoadedState) {
                                           AppToast.showSuccess(
-                                              context, "Rent", "Rented Sucessfully ✅ Check Profile Section to Watch");
+                                            context,
+                                            "Rent",
+                                            "Rented Sucessfully ✅ Check Profile Section to Watch",
+                                          );
                                         }
                                       },
                                       child: Padding(
@@ -270,17 +251,15 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                           text: widget.isFromRental
                                               ? 'Watch Now'.tr()
                                               : (model?.isMovieOnRent == true
-                                                  ? 'Rent \u{20B9}${model?.movieRentPrice}'.tr()
-                                                  : 'Watch Now !'.tr()),
+                                                    ? 'Rent \u{20B9}${model?.movieRentPrice}'.tr()
+                                                    : 'Watch Now !'.tr()),
                                           onTap: () {
                                             if (widget.isFromRental) {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => VideoDescrptionScreen(
-                                                    model: model ?? Movie(),
-                                                    isTrailer: false,
-                                                  ),
+                                                  builder: (context) =>
+                                                      VideoDescrptionScreen(model: model ?? Movie(), isTrailer: false),
                                                 ),
                                               );
                                               return;
@@ -290,8 +269,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                               var day = model?.rentedTimeDays;
                                               if (day != null) {
                                                 final now = DateTime.now();
-                                                final validTill =
-                                                    now.add(Duration(days: int.tryParse(day.toString()) ?? 0));
+                                                final validTill = now.add(
+                                                  Duration(days: int.tryParse(day.toString()) ?? 0),
+                                                );
                                                 validityDate = DateFormat('yyyy-MM-dd').format(validTill);
                                               }
 
@@ -306,9 +286,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) => RazorpayScreen(
-                                                        amount: int.parse(
-                                                          state.model.movie?.movieRentPrice ?? "",
-                                                        ),
+                                                        amount: int.parse(state.model.movie?.movieRentPrice ?? ""),
                                                         subscriptionId: "",
                                                         razorPayKey: settingState.model.setting?.razorpayKey ?? "",
                                                         isSubscription: false,
@@ -320,36 +298,35 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                                   );
                                                 } else if (settingState.model.setting?.paymentType == "Cashfree") {
                                                   Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => CashFreeScreen(
-                                                          amount: int.tryParse(
-                                                                state.model.movie?.movieRentPrice ?? "",
-                                                              ) ??
-                                                              0,
-                                                          subscriptionId: "",
-                                                          movieId: widget.id,
-                                                          isSubscription: false,
-                                                          appId: settingState.model.setting?.cashfreeClientId,
-                                                          secrectId:
-                                                              settingState.model.setting?.cashfreeClientSecretKey,
-                                                          formattedDate: validityDate.toString(),
-                                                        ),
-                                                      ));
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => CashFreeScreen(
+                                                        amount:
+                                                            int.tryParse(state.model.movie?.movieRentPrice ?? "") ?? 0,
+                                                        subscriptionId: "",
+                                                        movieId: widget.id,
+                                                        isSubscription: false,
+                                                        appId: settingState.model.setting?.cashfreeClientId,
+                                                        secrectId: settingState.model.setting?.cashfreeClientSecretKey,
+                                                        formattedDate: validityDate.toString(),
+                                                      ),
+                                                    ),
+                                                  );
                                                 } else if (settingState.model.setting?.paymentType == "UPI") {
                                                   Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => UPIIntentScreen(
-                                                          amount: state.model.movie?.movieRentPrice ?? "",
-                                                          subscriptionId: "",
-                                                          isSubscription: false,
-                                                          upiId: settingState.model.setting?.adminUpi ?? "",
-                                                          movieId: widget.id,
-                                                          upiName: settingState.model.setting?.authorName ?? "",
-                                                          formattedDate: validityDate.toString(),
-                                                        ),
-                                                      ));
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => UPIIntentScreen(
+                                                        amount: state.model.movie?.movieRentPrice ?? "",
+                                                        subscriptionId: "",
+                                                        isSubscription: false,
+                                                        upiId: settingState.model.setting?.adminUpi ?? "",
+                                                        movieId: widget.id,
+                                                        upiName: settingState.model.setting?.authorName ?? "",
+                                                        formattedDate: validityDate.toString(),
+                                                      ),
+                                                    ),
+                                                  );
                                                 } else if (settingState.model.setting?.paymentType == "PhonePe") {
                                                   // Navigator.push(
                                                   //     context,
@@ -386,10 +363,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => VideoDescrptionScreen(
-                                                  model: model,
-                                                  isTrailer: false,
-                                                ),
+                                                builder: (context) =>
+                                                    VideoDescrptionScreen(model: model, isTrailer: false),
                                               ),
                                             );
                                           },
@@ -401,92 +376,85 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                               ],
                             )
                           : (!isUserSubscribed && state.model.movie?.showSubscription == true)
-                              ? Column(
+                          ? Column(
+                              children: [
+                                Stack(
                                   children: [
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          height: MediaQuery.of(context).size.height * 0.5,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            borderRadius: const BorderRadius.only(
-                                              bottomLeft: Radius.circular(12),
-                                              bottomRight: Radius.circular(12),
-                                            ),
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage("${model?.coverImg}"),
-                                            ),
-                                          ),
+                                    Container(
+                                      height: MediaQuery.of(context).size.height * 0.5,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                          bottomLeft: Radius.circular(12),
+                                          bottomRight: Radius.circular(12),
                                         ),
-                                        const Positioned(
-                                          top: 10,
-                                          left: 10,
-                                          child: CustomBackButton(),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage("${AppUrls.baseUrl}/${model?.coverImg}"),
                                         ),
-                                      ],
-                                    ),
-                                    sb15h(),
-                                    Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: GradientButton(
-                                        height: 48,
-                                        text: 'Subscribe'.tr(),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => const SubscriptionScreen(),
-                                              ));
-                                        },
                                       ),
                                     ),
+                                    const Positioned(top: 10, left: 10, child: CustomBackButton()),
                                   ],
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 23,
+                                ),
+                                sb15h(),
+                                Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: GradientButton(
+                                    height: 48,
+                                    text: 'Subscribe'.tr(),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const SubscriptionScreen()),
+                                      );
+                                    },
                                   ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      color: Colors.black,
-                                      height: MediaQuery.of(context).size.height * 0.33,
-                                      child: InteractiveViewer(
-                                        minScale: 1.0,
-                                        maxScale: 4.0,
-                                        child: CustomVideoPlayer(
-                                          lastPosition: widget.lastPosition,
-                                          ads: model?.movieAd,
-                                          audioUrl: (model?.movieVideo?.isNotEmpty == true
-                                              ? model?.movieVideo?.contains("https") ?? false
-                                                  ? "${model?.movieVideo}"
-                                                  : "https://${model?.movieVideo}"
-                                              : model?.videoLink ?? ""),
-                                          handleOnChanged: (int watchTime, {bool isWatched = false}) {
-                                            final videoUrl = (model?.movieVideo?.isNotEmpty == true
+                                ),
+                              ],
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 23),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  color: Colors.black,
+                                  height: MediaQuery.of(context).size.height * 0.33,
+                                  child: InteractiveViewer(
+                                    minScale: 1.0,
+                                    maxScale: 4.0,
+                                    child: CustomVideoPlayer(
+                                      lastPosition: widget.lastPosition,
+                                      ads: model?.movieAd,
+                                      audioUrl: (model?.movieVideo?.isNotEmpty == true
+                                          ? model?.movieVideo?.contains("https") ?? false
                                                 ? "${AppUrls.baseUrl}/${model?.movieVideo}"
-                                                : model?.videoLink ?? "");
-                                            log("videoUrl=====> $videoUrl");
-                                            if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')
-                                                //||
-                                                //    widget.isTrailer
-                                                ) {
-                                              return;
-                                            }
+                                                : "${AppUrls.baseUrl}/${model?.movieVideo}"
+                                          : model?.videoLink ?? ""),
+                                      handleOnChanged: (int watchTime, {bool isWatched = false}) {
+                                        final videoUrl = (model?.movieVideo?.isNotEmpty == true
+                                            ? "${AppUrls.baseUrl}/${model?.movieVideo}"
+                                            : model?.videoLink ?? "");
+                                        log("videoUrl=====> $videoUrl");
+                                        if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')
+                                        //||
+                                        //    widget.isTrailer
+                                        ) {
+                                          return;
+                                        }
 
-                                            _watchingCubit?.postContinueWatching(
-                                              contentType: ContentType.movie,
-                                              typeId: model?.id,
-                                              currentTime: watchTime,
-                                              isWatched: isWatched,
-                                            );
-                                          },
-                                        ),
-                                      ),
+                                        _watchingCubit?.postContinueWatching(
+                                          contentType: ContentType.movie,
+                                          typeId: model?.id,
+                                          currentTime: watchTime,
+                                          isWatched: isWatched,
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),
+                              ),
+                            ),
                       sb15h(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -506,9 +474,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                             child: GestureDetector(
                               onTap: () {
                                 context.read<PostWatchlistCubit>().postWatchList(
-                                      movieId: widget.id,
-                                      type: ContentType.movie,
-                                    );
+                                  movieId: widget.id,
+                                  type: ContentType.movie,
+                                );
                               },
                               child: Column(
                                 children: [
@@ -516,15 +484,13 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                     color: AppColor.whiteColor,
                                     onPressed: () {
                                       context.read<PostWatchlistCubit>().postWatchList(
-                                            movieId: widget.id,
-                                            type: ContentType.movie,
-                                          );
+                                        movieId: widget.id,
+                                        type: ContentType.movie,
+                                      );
                                     },
                                     icon: const Icon(Icons.add),
                                   ),
-                                  TextWidget(
-                                    text: "Add To WatchList".tr(),
-                                  )
+                                  TextWidget(text: "Add To WatchList".tr()),
                                 ],
                               ),
                             ),
@@ -538,104 +504,99 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                   final link = "https://bigcinema.com?type=${ContentType.movie}&id=$movieId";
                                   Share.share("Watch this movie on ${AppString.appName} 🎬\n$link");
                                 },
-                                icon: const Icon(
-                                  Icons.share,
-                                  size: 20,
-                                ),
+                                icon: const Icon(Icons.share, size: 20),
                               ),
-                              TextWidget(
-                                text: "Share".tr(),
-                              )
+                              TextWidget(text: "Share".tr()),
                             ],
                           ),
                           (isYouTubeLink(model?.videoLink))
                               ? const SizedBox.shrink()
                               : shouldShowDownload
-                                  ? Column(
+                              ? Column(
+                                  children: [
+                                    Stack(
+                                      alignment: Alignment.center,
                                       children: [
-                                        Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            CircularProgressIndicator(
-                                              value: _isDownloading ? _downloadProgress : 1,
-                                              strokeWidth: 3,
-                                              backgroundColor: Colors.grey,
-                                              color: _isDownloaded ? Colors.green : AppColor.whiteColor,
-                                            ),
-                                            IconButton(
-                                              color: AppColor.whiteColor,
-                                              onPressed: () {
-                                                if (!_isDownloading && !_isDownloaded) {
-                                                  _downloadVideo(
-                                                    movie: models.Movie(
-                                                      userId: userId,
-                                                      averageRating: model?.averageRating,
-                                                      reportCount: model?.reportCount,
-                                                      totalRatings: model?.totalRatings,
-                                                      category: genre.Genre(
-                                                        coverImg: model?.category?.coverImg,
-                                                        createdAt: model?.category?.createdAt,
-                                                        id: model?.category?.id,
-                                                        name: model?.category?.name,
-                                                        status: model?.category?.status,
-                                                        updatedAt: model?.category?.updatedAt,
-                                                      ),
-                                                      coverImg: model?.coverImg,
-                                                      createdAt: model?.createdAt,
-                                                      description: model?.description,
-                                                      genre: genre.Genre(
-                                                        coverImg: model?.genre?.coverImg,
-                                                        createdAt: model?.genre?.createdAt,
-                                                        id: model?.genre?.id,
-                                                        name: model?.genre?.name,
-                                                        status: model?.genre?.status,
-                                                        updatedAt: model?.genre?.updatedAt,
-                                                      ),
-                                                      genreId: model?.genreId,
-                                                      id: model?.id,
-                                                      isHighlighted: model?.isHighlighted,
-                                                      isMovieOnRent: model?.isMovieOnRent,
-                                                      isWatchlist: model?.isWatchlist,
-                                                      language: genre.Genre(
-                                                        coverImg: model?.language?.coverImg,
-                                                        createdAt: model?.language?.createdAt,
-                                                        id: model?.id,
-                                                        name: model?.language?.name,
-                                                        status: model?.language?.status,
-                                                        updatedAt: model?.language?.updatedAt,
-                                                      ),
-                                                      movieCategory: model?.movieCategory,
-                                                      movieLanguage: model?.movieLanguage,
-                                                      movieName: model?.movieName,
-                                                      movieRentPrice: model?.movieRentPrice,
-                                                      movieTime: model?.movieTime,
-                                                      movieVideo: model?.movieVideo,
-                                                      posterImg: model?.posterImg,
-                                                      quality: model?.quality,
-                                                      releasedBy: model?.releasedBy,
-                                                      releasedDate: model?.releasedDate.toString(),
-                                                      status: model?.status,
-                                                      subtitle: model?.subtitle,
-                                                      trailorVideo: model?.trailorVideo,
-                                                      trailorVideoLink: model?.trailorVideoLink,
-                                                      updatedAt: model?.updatedAt,
-                                                      videoLink: model?.videoLink,
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                              icon: Icon(
-                                                _isDownloaded ? Icons.check : Icons.download,
-                                                color: _isDownloaded ? Colors.green : AppColor.whiteColor,
-                                                size: 20,
-                                              ),
-                                            ),
-                                          ],
+                                        CircularProgressIndicator(
+                                          value: _isDownloading ? _downloadProgress : 1,
+                                          strokeWidth: 3,
+                                          backgroundColor: Colors.grey,
+                                          color: _isDownloaded ? Colors.green : AppColor.whiteColor,
                                         ),
-                                        TextWidget(text: _isDownloading ? "Dowloading" : "Download".tr())
+                                        IconButton(
+                                          color: AppColor.whiteColor,
+                                          onPressed: () {
+                                            if (!_isDownloading && !_isDownloaded) {
+                                              _downloadVideo(
+                                                movie: models.Movie(
+                                                  userId: userId,
+                                                  averageRating: model?.averageRating,
+                                                  reportCount: model?.reportCount,
+                                                  totalRatings: model?.totalRatings,
+                                                  category: genre.Genre(
+                                                    coverImg: model?.category?.coverImg,
+                                                    createdAt: model?.category?.createdAt,
+                                                    id: model?.category?.id,
+                                                    name: model?.category?.name,
+                                                    status: model?.category?.status,
+                                                    updatedAt: model?.category?.updatedAt,
+                                                  ),
+                                                  coverImg: model?.coverImg,
+                                                  createdAt: model?.createdAt,
+                                                  description: model?.description,
+                                                  genre: genre.Genre(
+                                                    coverImg: model?.genre?.coverImg,
+                                                    createdAt: model?.genre?.createdAt,
+                                                    id: model?.genre?.id,
+                                                    name: model?.genre?.name,
+                                                    status: model?.genre?.status,
+                                                    updatedAt: model?.genre?.updatedAt,
+                                                  ),
+                                                  genreId: model?.genreId,
+                                                  id: model?.id,
+                                                  isHighlighted: model?.isHighlighted,
+                                                  isMovieOnRent: model?.isMovieOnRent,
+                                                  isWatchlist: model?.isWatchlist,
+                                                  language: genre.Genre(
+                                                    coverImg: model?.language?.coverImg,
+                                                    createdAt: model?.language?.createdAt,
+                                                    id: model?.id,
+                                                    name: model?.language?.name,
+                                                    status: model?.language?.status,
+                                                    updatedAt: model?.language?.updatedAt,
+                                                  ),
+                                                  movieCategory: model?.movieCategory,
+                                                  movieLanguage: model?.movieLanguage,
+                                                  movieName: model?.movieName,
+                                                  movieRentPrice: model?.movieRentPrice,
+                                                  movieTime: model?.movieTime,
+                                                  movieVideo: model?.movieVideo,
+                                                  posterImg: model?.posterImg,
+                                                  quality: model?.quality,
+                                                  releasedBy: model?.releasedBy,
+                                                  releasedDate: model?.releasedDate.toString(),
+                                                  status: model?.status,
+                                                  subtitle: model?.subtitle,
+                                                  trailorVideo: model?.trailorVideo,
+                                                  trailorVideoLink: model?.trailorVideoLink,
+                                                  updatedAt: model?.updatedAt,
+                                                  videoLink: model?.videoLink,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          icon: Icon(
+                                            _isDownloaded ? Icons.check : Icons.download,
+                                            color: _isDownloaded ? Colors.green : AppColor.whiteColor,
+                                            size: 20,
+                                          ),
+                                        ),
                                       ],
-                                    )
-                                  : SizedBox(),
+                                    ),
+                                    TextWidget(text: _isDownloading ? "Dowloading" : "Download".tr()),
+                                  ],
+                                )
+                              : SizedBox(),
                         ],
                       ),
                       sb20h(),
@@ -716,9 +677,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                                       rating = ratingvalue;
                                                     });
                                                     context.read<PostMovieRatingCubit>().postMovieRate(
-                                                          movieId: model?.id ?? "",
-                                                          rating: ratingvalue.toString(),
-                                                        );
+                                                      movieId: model?.id ?? "",
+                                                      rating: ratingvalue.toString(),
+                                                    );
                                                   },
                                                   initialRating: rating,
                                                   allowHalfRating: false,
@@ -753,18 +714,14 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                             BlocBuilder<GetCastCrewCubit, GetCastCrewState>(
                               builder: (context, state) {
                                 if (state is GetCastCrewLoadingState) {
-                                  return const Center(
-                                    child: CustomCircularProgressIndicator(),
-                                  );
+                                  return const Center(child: CustomCircularProgressIndicator());
                                 }
 
                                 if (state is GetCastCrewLoadedState) {
                                   return Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      TextWidget(
-                                        text: "Cast".tr(),
-                                      ),
+                                      TextWidget(text: "Cast".tr()),
                                       sb10h(),
                                       state.model.data?.isEmpty ?? true
                                           ? TextWidget(text: "No Cast Crew Avaliable".tr())
@@ -783,9 +740,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                                 var data = state.model.data?[index];
                                                 return Container(
                                                   decoration: const BoxDecoration(
-                                                    borderRadius: BorderRadius.all(
-                                                      Radius.circular(30),
-                                                    ),
+                                                    borderRadius: BorderRadius.all(Radius.circular(30)),
                                                     gradient: LinearGradient(
                                                       colors: [
                                                         Color.fromRGBO(233, 233, 233, 1),
@@ -813,7 +768,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                                           backgroundColor: Colors.white,
                                                           child: ClipOval(
                                                             child: Image.network(
-                                                              data?.profileImg ?? '',
+                                                              "${AppUrls.baseUrl}/${data?.profileImg ?? ''}",
                                                               width: 50,
                                                               height: 50,
                                                               fit: BoxFit.cover,
@@ -848,7 +803,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                                             ),
                                                           ],
                                                         ),
-                                                      )
+                                                      ),
                                                     ],
                                                   ),
                                                 );
@@ -865,10 +820,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                 ? Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      TextWidget(
-                                        text: 'Recommended Movies'.tr(),
-                                        fontSize: 16,
-                                      ),
+                                      TextWidget(text: 'Recommended Movies'.tr(), fontSize: 16),
                                       sb10h(),
                                       SizedBox(
                                         height: 190,
@@ -883,9 +835,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => MovieDetailScreen(
-                                                      id: data?.id ?? "",
-                                                    ),
+                                                    builder: (context) => MovieDetailScreen(id: data?.id ?? ""),
                                                   ),
                                                 );
                                               },
@@ -899,7 +849,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                                     child: ClipRRect(
                                                       borderRadius: BorderRadius.circular(12),
                                                       child: CustomCachedCard(
-                                                        imageUrl: "${data?.posterImg}",
+                                                        imageUrl: "${AppUrls.baseUrl}/${data?.posterImg}",
                                                         width: 250,
                                                         height: 160,
                                                       ),
@@ -928,9 +878,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                             sb10h(),
                             Center(
                               child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColor.redColor,
-                                ),
+                                style: ElevatedButton.styleFrom(backgroundColor: AppColor.redColor),
                                 child: TextWidget(text: 'Report'.tr()),
                                 onPressed: () {
                                   showDialog(
@@ -952,69 +900,63 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> with Utility {
                                           child: SingleChildScrollView(
                                             child: Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: StatefulBuilder(builder: (context, setState) {
-                                                return Column(
-                                                  children: [
-                                                    sb10h(),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        sb20w(),
-                                                        TextWidget(
-                                                          text: "Report".tr(),
-                                                          fontSize: 15,
-                                                        ),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            Navigator.pop(context);
-                                                          },
-                                                          icon: const Icon(
-                                                            Icons.close,
-                                                            color: AppColor.whiteColor,
+                                              child: StatefulBuilder(
+                                                builder: (context, setState) {
+                                                  return Column(
+                                                    children: [
+                                                      sb10h(),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          sb20w(),
+                                                          TextWidget(text: "Report".tr(), fontSize: 15),
+                                                          IconButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(context);
+                                                            },
+                                                            icon: const Icon(Icons.close, color: AppColor.whiteColor),
                                                           ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    sb10h(),
-                                                    Wrap(
-                                                      spacing: 10,
-                                                      children: reportReasons.map((reason) {
-                                                        return ChoiceChip(
-                                                          label: Text(reason),
-                                                          selected: selectedReason == reason,
-                                                          onSelected: (selected) {
-                                                            setState(() {
-                                                              selectedReason = selected ? reason : null;
-                                                            });
-                                                          },
-                                                          selectedColor: AppColor.redColor,
-                                                          backgroundColor: Colors.grey.shade800,
-                                                          iconTheme: const IconThemeData(color: AppColor.whiteColor),
-                                                          labelStyle: const TextStyle(color: AppColor.whiteColor),
-                                                        );
-                                                      }).toList(),
-                                                    ),
-                                                    sb20h(),
-                                                    ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                                      onPressed: () {
-                                                        if (selectedReason == null) {
-                                                          AppToast.showError(context, "Reason", "Select reason");
-                                                          return;
-                                                        }
-                                                        context.read<PostReportCubit>().report(
-                                                              contentId: model?.id ?? "",
-                                                              contentType: ContentType.movie,
-                                                              reason: selectedReason,
-                                                            );
-                                                      },
-                                                      child: TextWidget(
-                                                        text: "Report".tr(),
+                                                        ],
                                                       ),
-                                                    )
-                                                  ],
-                                                );
-                                              }),
+                                                      sb10h(),
+                                                      Wrap(
+                                                        spacing: 10,
+                                                        children: reportReasons.map((reason) {
+                                                          return ChoiceChip(
+                                                            label: Text(reason),
+                                                            selected: selectedReason == reason,
+                                                            onSelected: (selected) {
+                                                              setState(() {
+                                                                selectedReason = selected ? reason : null;
+                                                              });
+                                                            },
+                                                            selectedColor: AppColor.redColor,
+                                                            backgroundColor: Colors.grey.shade800,
+                                                            iconTheme: const IconThemeData(color: AppColor.whiteColor),
+                                                            labelStyle: const TextStyle(color: AppColor.whiteColor),
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                      sb20h(),
+                                                      ElevatedButton(
+                                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                                        onPressed: () {
+                                                          if (selectedReason == null) {
+                                                            AppToast.showError(context, "Reason", "Select reason");
+                                                            return;
+                                                          }
+                                                          context.read<PostReportCubit>().report(
+                                                            contentId: model?.id ?? "",
+                                                            contentType: ContentType.movie,
+                                                            reason: selectedReason,
+                                                          );
+                                                        },
+                                                        child: TextWidget(text: "Report".tr()),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -1089,9 +1031,6 @@ class _ExpandableDescriptionState extends State<ExpandableDescription> {
     return text.length > 150;
   }
 }
-
-
-
 
 // import 'dart:developer';
 // import 'package:dio/dio.dart';
