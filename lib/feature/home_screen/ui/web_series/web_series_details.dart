@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -69,14 +70,10 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
         child: BlocBuilder<GetWebseriesByIdCubit, GetWebseriesByIdState>(
           builder: (context, state) {
             if (state is GetWebseriesByIdLoadingState) {
-              return const Center(
-                child: CustomCircularProgressIndicator(),
-              );
+              return const Center(child: CustomCircularProgressIndicator());
             }
             if (state is GetWebseriesByIdErrorState) {
-              return const Center(
-                child: CustomErrorWidget(),
-              );
+              return const Center(child: CustomErrorWidget());
             }
             if (state is GetWebseriesByIdLoadedState) {
               var model = state.model.data;
@@ -94,17 +91,11 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                           ),
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: NetworkImage(
-                              "${model?.coverImg}",
-                            ),
+                            image: NetworkImage("${AppUrls.baseUrl}/${model?.coverImg}"),
                           ),
                         ),
                       ),
-                      const Positioned(
-                        top: 30,
-                        left: 16,
-                        child: CustomBackButton(),
-                      ),
+                      const Positioned(top: 30, left: 16, child: CustomBackButton()),
                     ],
                   ),
                   sb15h(),
@@ -119,11 +110,7 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TextWidget(
-                                  text: model?.seriesName ?? "",
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                                TextWidget(text: model?.seriesName ?? "", fontSize: 19, fontWeight: FontWeight.w800),
                                 TextWidget(
                                   text: model?.category?.name ?? "",
                                   fontSize: 13,
@@ -181,10 +168,10 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                                   rating = ratingvalue;
                                                 });
                                                 context.read<PostSeriesRatingCubit>().postSeriesRate(
-                                                      movieId: model?.id ?? "",
-                                                      rating: ratingvalue.toString(),
-                                                      type: widget.type,
-                                                    );
+                                                  movieId: model?.id ?? "",
+                                                  rating: ratingvalue.toString(),
+                                                  type: widget.type,
+                                                );
                                               },
                                               initialRating: rating,
                                               allowHalfRating: false,
@@ -223,7 +210,10 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
 
                                   if (state is PostRentLoadedState) {
                                     AppToast.showSuccess(
-                                        context, "Rent", "Rented Sucessfully ✅ Check Profile Section to Watch");
+                                      context,
+                                      "Rent",
+                                      "Rented Sucessfully ✅ Check Profile Section to Watch",
+                                    );
                                   }
                                 },
                                 child: Column(
@@ -238,8 +228,9 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                             String? validityDate;
                                             if (day != null) {
                                               final now = DateTime.now();
-                                              final validTill =
-                                                  now.add(Duration(days: int.tryParse(day.toString()) ?? 0));
+                                              final validTill = now.add(
+                                                Duration(days: int.tryParse(day.toString()) ?? 0),
+                                              );
                                               validityDate = DateFormat('yyyy-MM-dd').format(validTill);
                                             }
 
@@ -252,9 +243,7 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) => RazorpayScreen(
-                                                      amount: int.parse(
-                                                        model?.seriesRentPrice ?? "",
-                                                      ),
+                                                      amount: int.parse(model?.seriesRentPrice ?? ""),
                                                       subscriptionId: "",
                                                       razorPayKey: settingState.model.setting?.razorpayKey ?? "",
                                                       isSubscription: false,
@@ -266,35 +255,34 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                                 );
                                               } else if (settingState.model.setting?.paymentType == "Cashfree") {
                                                 Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => CashFreeScreen(
-                                                        amount: int.tryParse(
-                                                              model?.seriesRentPrice ?? "",
-                                                            ) ??
-                                                            0,
-                                                        subscriptionId: "",
-                                                        seriesId: model?.id,
-                                                        isSubscription: false,
-                                                        appId: settingState.model.setting?.cashfreeClientId,
-                                                        secrectId: settingState.model.setting?.cashfreeClientSecretKey,
-                                                        formattedDate: validityDate.toString(),
-                                                      ),
-                                                    ));
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => CashFreeScreen(
+                                                      amount: int.tryParse(model?.seriesRentPrice ?? "") ?? 0,
+                                                      subscriptionId: "",
+                                                      seriesId: model?.id,
+                                                      isSubscription: false,
+                                                      appId: settingState.model.setting?.cashfreeClientId,
+                                                      secrectId: settingState.model.setting?.cashfreeClientSecretKey,
+                                                      formattedDate: validityDate.toString(),
+                                                    ),
+                                                  ),
+                                                );
                                               } else if (settingState.model.setting?.paymentType == "UPI") {
                                                 Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => UPIIntentScreen(
-                                                        amount: model?.seriesRentPrice ?? "",
-                                                        subscriptionId: "",
-                                                        isSubscription: false,
-                                                        upiId: settingState.model.setting?.adminUpi ?? "",
-                                                        seriesId: model?.id,
-                                                        upiName: settingState.model.setting?.authorName ?? "",
-                                                        formattedDate: validityDate.toString(),
-                                                      ),
-                                                    ));
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => UPIIntentScreen(
+                                                      amount: model?.seriesRentPrice ?? "",
+                                                      subscriptionId: "",
+                                                      isSubscription: false,
+                                                      upiId: settingState.model.setting?.adminUpi ?? "",
+                                                      seriesId: model?.id,
+                                                      upiName: settingState.model.setting?.authorName ?? "",
+                                                      formattedDate: validityDate.toString(),
+                                                    ),
+                                                  ),
+                                                );
                                               } else if (settingState.model.setting?.paymentType == "PhonePe") {
                                                 // Navigator.push(
                                                 //     context,
@@ -321,101 +309,86 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                         );
                                       },
                                     ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
+                                    const SizedBox(height: 10),
                                   ],
                                 ),
                               )
                             : (widget.isFromRental || (model!.showSubscription == true && isUserSubscribed))
-                                ? Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      TextWidget(
-                                        text: "Seasons".tr(),
-                                      ),
-                                      sb10h(),
-                                      ListView.builder(
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: model?.season?.length ?? 0,
-                                        itemBuilder: (context, index) {
-                                          final season = model?.season![index];
-                                          return Container(
-                                            margin: const EdgeInsets.symmetric(vertical: 6),
-                                            decoration: BoxDecoration(
-                                              color: Colors.black.withOpacity(0.2),
-                                              borderRadius: BorderRadius.circular(12),
-                                              border: Border.all(
-                                                color: Colors.white.withOpacity(0.2),
-                                                width: 1,
-                                              ),
-                                            ),
-                                            child: ListTile(
-                                              onTap: () {
-                                                if (!isUserSubscribed && model?.showSubscription == true) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => const SubscriptionScreen(),
-                                                    ),
-                                                  );
-                                                  return;
-                                                }
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextWidget(text: "Seasons".tr()),
+                                  sb10h(),
+                                  ListView.builder(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: model?.season?.length ?? 0,
+                                    itemBuilder: (context, index) {
+                                      final season = model?.season![index];
+                                      return Container(
+                                        margin: const EdgeInsets.symmetric(vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(12),
+                                          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+                                        ),
+                                        child: ListTile(
+                                          onTap: () {
+                                            if (!isUserSubscribed && model?.showSubscription == true) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => const SubscriptionScreen()),
+                                              );
+                                              return;
+                                            }
 
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        EpisodeDetailScreen(seasonId: season?.id ?? ""),
-                                                  ),
-                                                );
-                                              },
-                                              contentPadding: const EdgeInsets.all(16),
-                                              leading: const Icon(Icons.movie_creation_outlined),
-                                              title: TextWidget(
-                                                text: season?.seasonName ?? 'N/A',
-                                                fontSize: 18,
-                                                color: AppColor.whiteColor,
-                                                fontWeight: FontWeight.w600,
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => EpisodeDetailScreen(seasonId: season?.id ?? ""),
                                               ),
-                                              subtitle: TextWidget(
-                                                text: "Released: ${_formatDate(season?.releasedDate.toString())}",
-                                                style: const TextStyle(color: Colors.grey),
-                                              ),
-                                              trailing: IconButton(
-                                                iconSize: 35,
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          EpisodeDetailScreen(seasonId: season?.id ?? ""),
-                                                    ),
-                                                  );
-                                                },
-                                                icon: const Icon(
-                                                  Icons.play_arrow,
+                                            );
+                                          },
+                                          contentPadding: const EdgeInsets.all(16),
+                                          leading: const Icon(Icons.movie_creation_outlined),
+                                          title: TextWidget(
+                                            text: season?.seasonName ?? 'N/A',
+                                            fontSize: 18,
+                                            color: AppColor.whiteColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          subtitle: TextWidget(
+                                            text: "Released: ${_formatDate(season?.releasedDate.toString())}",
+                                            style: const TextStyle(color: Colors.grey),
+                                          ),
+                                          trailing: IconButton(
+                                            iconSize: 35,
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => EpisodeDetailScreen(seasonId: season?.id ?? ""),
                                                 ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                      sb30h(),
-                                    ],
-                                  )
-                                : GradientButton(
-                                    text: 'Subscribe'.tr(),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const SubscriptionScreen(),
+                                              );
+                                            },
+                                            icon: const Icon(Icons.play_arrow),
+                                          ),
                                         ),
                                       );
                                     },
                                   ),
+                                  sb30h(),
+                                ],
+                              )
+                            : GradientButton(
+                                text: 'Subscribe'.tr(),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const SubscriptionScreen()),
+                                  );
+                                },
+                              ),
                         sb10h(),
                         ExpandableDescription(description: state.model.data?.description ?? ""),
                         sb15h(),
@@ -423,18 +396,14 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                         BlocBuilder<GetSeriesCastcrewCubit, GetSeriesCastcrewState>(
                           builder: (context, state) {
                             if (state is GetSeriesCastcrewLoadingState) {
-                              return const Center(
-                                child: CustomCircularProgressIndicator(),
-                              );
+                              return const Center(child: CustomCircularProgressIndicator());
                             }
 
                             if (state is GetSeriesCastcrewLoadedState) {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  TextWidget(
-                                    text: "Cast".tr(),
-                                  ),
+                                  TextWidget(text: "Cast".tr()),
                                   sb10h(),
                                   state.model.data?.isEmpty ?? true
                                       ? TextWidget(text: "No Cast Crew Available".tr())
@@ -453,9 +422,7 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                             var data = state.model.data?[index];
                                             return Container(
                                               decoration: const BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(30),
-                                                ),
+                                                borderRadius: BorderRadius.all(Radius.circular(30)),
                                                 gradient: LinearGradient(
                                                   colors: [
                                                     Color.fromRGBO(233, 233, 233, 1),
@@ -483,7 +450,7 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                                       backgroundColor: Colors.white,
                                                       child: ClipOval(
                                                         child: Image.network(
-                                                          data?.profileImg ?? '',
+                                                          "${AppUrls.baseUrl}/${data?.profileImg ?? ''}",
                                                           width: 50,
                                                           height: 50,
                                                           fit: BoxFit.cover,
@@ -518,7 +485,7 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                                         ),
                                                       ],
                                                     ),
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                             );
@@ -533,9 +500,7 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                         sb10h(),
                         Center(
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColor.redColor,
-                            ),
+                            style: ElevatedButton.styleFrom(backgroundColor: AppColor.redColor),
                             child: TextWidget(text: 'Report'.tr()),
                             onPressed: () {
                               showDialog(
@@ -557,69 +522,63 @@ class _WebSeriesDetailsState extends State<WebSeriesDetails> with Utility {
                                       child: SingleChildScrollView(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: StatefulBuilder(builder: (context, setState) {
-                                            return Column(
-                                              children: [
-                                                sb10h(),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    sb20w(),
-                                                    TextWidget(
-                                                      text: "Report".tr(),
-                                                      fontSize: 15,
-                                                    ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      icon: const Icon(
-                                                        Icons.close,
-                                                        color: AppColor.whiteColor,
+                                          child: StatefulBuilder(
+                                            builder: (context, setState) {
+                                              return Column(
+                                                children: [
+                                                  sb10h(),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      sb20w(),
+                                                      TextWidget(text: "Report".tr(), fontSize: 15),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        icon: const Icon(Icons.close, color: AppColor.whiteColor),
                                                       ),
-                                                    )
-                                                  ],
-                                                ),
-                                                sb10h(),
-                                                Wrap(
-                                                  spacing: 10,
-                                                  children: reportReasons.map((reason) {
-                                                    return ChoiceChip(
-                                                      label: Text(reason),
-                                                      selected: selectedReason == reason,
-                                                      onSelected: (selected) {
-                                                        setState(() {
-                                                          selectedReason = selected ? reason : null;
-                                                        });
-                                                      },
-                                                      selectedColor: AppColor.redColor,
-                                                      backgroundColor: Colors.grey.shade800,
-                                                      iconTheme: const IconThemeData(color: AppColor.whiteColor),
-                                                      labelStyle: const TextStyle(color: AppColor.whiteColor),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                                sb20h(),
-                                                ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                                  onPressed: () {
-                                                    if (selectedReason == null) {
-                                                      AppToast.showError(context, "Reason", "Select reason");
-                                                      return;
-                                                    }
-                                                    context.read<PostReportCubit>().report(
-                                                          contentId: model?.id ?? "",
-                                                          contentType: ContentType.series,
-                                                          reason: selectedReason,
-                                                        );
-                                                  },
-                                                  child: TextWidget(
-                                                    text: "Report".tr(),
+                                                    ],
                                                   ),
-                                                )
-                                              ],
-                                            );
-                                          }),
+                                                  sb10h(),
+                                                  Wrap(
+                                                    spacing: 10,
+                                                    children: reportReasons.map((reason) {
+                                                      return ChoiceChip(
+                                                        label: Text(reason),
+                                                        selected: selectedReason == reason,
+                                                        onSelected: (selected) {
+                                                          setState(() {
+                                                            selectedReason = selected ? reason : null;
+                                                          });
+                                                        },
+                                                        selectedColor: AppColor.redColor,
+                                                        backgroundColor: Colors.grey.shade800,
+                                                        iconTheme: const IconThemeData(color: AppColor.whiteColor),
+                                                        labelStyle: const TextStyle(color: AppColor.whiteColor),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                  sb20h(),
+                                                  ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                                    onPressed: () {
+                                                      if (selectedReason == null) {
+                                                        AppToast.showError(context, "Reason", "Select reason");
+                                                        return;
+                                                      }
+                                                      context.read<PostReportCubit>().report(
+                                                        contentId: model?.id ?? "",
+                                                        contentType: ContentType.series,
+                                                        reason: selectedReason,
+                                                      );
+                                                    },
+                                                    child: TextWidget(text: "Report".tr()),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),

@@ -75,8 +75,8 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
 
       await Dio().download(
         widget.episode?.video?.contains("https") ?? false
-            ? "${widget.episode?.video}"
-            : "https://${widget.episode?.video}",
+            ? "${AppUrls.baseUrl}/${widget.episode?.video}"
+            : "${AppUrls.baseUrl}/${widget.episode?.video}",
         "${AppUrls.baseUrl}/${episode.video}",
         onReceiveProgress: (received, total) {
           if (total != -1) {
@@ -134,15 +134,9 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
               context.read<GetContinueWatchingCubit>().getContinueWatching();
               Navigator.pop(context);
             },
-            child: const Icon(
-              Icons.arrow_back_ios_new_outlined,
-              color: AppColor.whiteColor,
-            ),
+            child: const Icon(Icons.arrow_back_ios_new_outlined, color: AppColor.whiteColor),
           ),
-          title: TextWidget(
-            text: "${widget.episode?.episodeName}",
-            fontSize: 15,
-          ),
+          title: TextWidget(text: "${widget.episode?.episodeName}", fontSize: 15),
         ),
         body: Column(
           children: [
@@ -156,13 +150,13 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
                   audioUrl: (widget.episode?.video == null || widget.episode!.video!.isEmpty)
                       ? "${widget.episode?.videoLink}"
                       : widget.episode?.video?.contains("https") ?? false
-                          ? "${widget.episode?.video}"
-                          : "https://${widget.episode?.video}",
+                      ? "${widget.episode?.video}"
+                      : "${AppUrls.baseUrl}/${widget.episode?.video}",
                   handleOnChanged: (int watchTime, {bool isWatched = false}) {
                     log("==============$watchTime=============");
 
                     final videoUrl = (widget.episode?.video?.isNotEmpty == true
-                        ? "https://${widget.episode?.video}"
+                        ? "${AppUrls.baseUrl}/${widget.episode?.video}"
                         : widget.episode?.videoLink ?? "");
                     log("videoUrl=====> $videoUrl");
                     if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be')) {
@@ -204,9 +198,9 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
                             child: GestureDetector(
                               onTap: () {
                                 context.read<PostWatchlistCubit>().postWatchList(
-                                      seasonEpisodeId: widget.episode?.id ?? "",
-                                      type: ContentType.season_episode,
-                                    );
+                                  seasonEpisodeId: widget.episode?.id ?? "",
+                                  type: ContentType.season_episode,
+                                );
                               },
                               child: Column(
                                 children: [
@@ -214,15 +208,13 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
                                     color: AppColor.whiteColor,
                                     onPressed: () {
                                       context.read<PostWatchlistCubit>().postWatchList(
-                                            seasonEpisodeId: widget.episode?.id ?? "",
-                                            type: ContentType.season_episode,
-                                          );
+                                        seasonEpisodeId: widget.episode?.id ?? "",
+                                        type: ContentType.season_episode,
+                                      );
                                     },
                                     icon: const Icon(Icons.add),
                                   ),
-                                  TextWidget(
-                                    text: "Add To WatchList".tr(),
-                                  )
+                                  TextWidget(text: "Add To WatchList".tr()),
                                 ],
                               ),
                             ),
@@ -236,14 +228,9 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
                                   final link = "https://bigcinema.com?type=${ContentType.season_episode}&id=$movieId";
                                   Share.share("Watch this Short Film on ${AppString.appName} 🎬\n$link");
                                 },
-                                icon: const Icon(
-                                  Icons.share,
-                                  size: 20,
-                                ),
+                                icon: const Icon(Icons.share, size: 20),
                               ),
-                              TextWidget(
-                                text: "Share".tr(),
-                              )
+                              TextWidget(text: "Share".tr()),
                             ],
                           ),
                           Column(
@@ -286,7 +273,7 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
                                   ),
                                 ],
                               ),
-                              TextWidget(text: _isDownloading ? "Dowloading" : "Download".tr())
+                              TextWidget(text: _isDownloading ? "Dowloading" : "Download".tr()),
                             ],
                           ),
                         ],
@@ -295,18 +282,14 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
                       BlocBuilder<GetCastCrewCubit, GetCastCrewState>(
                         builder: (context, state) {
                           if (state is GetCastCrewLoadingState) {
-                            return const Center(
-                              child: CustomCircularProgressIndicator(),
-                            );
+                            return const Center(child: CustomCircularProgressIndicator());
                           }
 
                           if (state is GetCastCrewLoadedState) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TextWidget(
-                                  text: "Cast".tr(),
-                                ),
+                                TextWidget(text: "Cast".tr()),
                                 sb10h(),
                                 state.model.data?.isEmpty ?? true
                                     ? TextWidget(text: "No Cast Crew Avaliable".tr())
@@ -353,10 +336,7 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
                                                 sb5h(),
                                                 TextWidget(text: "${data?.name}"),
                                                 sb5h(),
-                                                TextWidget(
-                                                  text: "${data?.role}",
-                                                  color: AppColor.greyColor,
-                                                )
+                                                TextWidget(text: "${data?.role}", color: AppColor.greyColor),
                                               ],
                                             );
                                           },

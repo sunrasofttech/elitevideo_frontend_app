@@ -57,7 +57,7 @@ class _DownloadScreenState extends State<DownloadScreen> with Utility {
                 return GestureDetector(
                   onTap: () {
                     log("message = = = = ${dashboardGlobalKey.currentState}");
-                    dashboardGlobalKey.currentState?.switchTab(4);
+                    dashboardGlobalKey.currentState?.switchTab(5);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(2),

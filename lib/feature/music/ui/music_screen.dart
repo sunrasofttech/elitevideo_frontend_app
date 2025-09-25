@@ -104,7 +104,7 @@ class MusicScreenState extends State<MusicScreen> with Utility {
           sb10w(),
           GestureDetector(
             onTap: () {
-              dashboardGlobalKey.currentState?.switchTab(4);
+              dashboardGlobalKey.currentState?.switchTab(5);
             },
             child: BlocBuilder<GetProfileCubit, GetProfileState>(
               builder: (context, state) {

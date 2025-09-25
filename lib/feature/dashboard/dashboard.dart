@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:elite/feature/trailer/trailer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
@@ -56,12 +57,9 @@ class DashboardScreenState extends State<DashboardScreen> with Utility {
   List<Widget> pages = [];
 
   HomeScreen homeScreen = const HomeScreen();
-  MusicScreen musicScreen = MusicScreen(
-    key: musicScreenState,
-  );
-  SearchScreen searchScreen = SearchScreen(
-    key: searchScreenState,
-  );
+  MusicScreen musicScreen = MusicScreen(key: musicScreenState);
+  SearchScreen searchScreen = SearchScreen(key: searchScreenState);
+  TrailerScreen _trailerScreen = TrailerScreen();
   DownloadScreen downloadScreen = const DownloadScreen();
   ProfileScreen profileScreen = const ProfileScreen();
   final appLinks = AppLinks();
@@ -77,7 +75,7 @@ class DashboardScreenState extends State<DashboardScreen> with Utility {
   void initState() {
     super.initState();
     currentIndex = widget.currentIndex ?? 0;
-    pages = [homeScreen, musicScreen, searchScreen, downloadScreen, profileScreen];
+    pages = [homeScreen, _trailerScreen, musicScreen, searchScreen, downloadScreen, profileScreen];
     currentPage = pages[currentIndex];
     context.read<GetAllPlaylistCubit>().getAllPlaylist();
     context.read<HighlightedMovieCubit>().getHighLightedMovie();
@@ -103,13 +101,16 @@ class DashboardScreenState extends State<DashboardScreen> with Utility {
     context.read<GetAllLanguageCubit>().getAllLanguage();
     context.read<GetPopularMusicCubit>().getAllMusic();
     context.read<GetArtistCubit>().getAllArtist();
-    appLinks.uriLinkStream.listen((Uri? uri) {
-      debugPrint("Received Uri: $uri");
-      // final movieId = uri?.queryParameters['id'];
-      // AppToast.showSuccess("🆕 Opened from link with ID: $movieId");
-    }, onError: (err) {
-      debugPrint("Error in deep linking: $err");
-    });
+    appLinks.uriLinkStream.listen(
+      (Uri? uri) {
+        debugPrint("Received Uri: $uri");
+        // final movieId = uri?.queryParameters['id'];
+        // AppToast.showSuccess("🆕 Opened from link with ID: $movieId");
+      },
+      onError: (err) {
+        debugPrint("Error in deep linking: $err");
+      },
+    );
   }
 
   @override
@@ -204,9 +205,7 @@ class DashboardScreenState extends State<DashboardScreen> with Utility {
                     if (state is GetProfileErrorState && state.error.contains("Session expired. Please login again")) {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => const OnBoardingScreen(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const OnBoardingScreen()),
                         (route) => false,
                       );
                       return;
@@ -217,10 +216,7 @@ class DashboardScreenState extends State<DashboardScreen> with Utility {
                       log("is User Subscribed => $isUserSubscribed Show Ads => $showAds");
                     }
                   },
-                  child: IndexedStack(
-                    index: currentIndex,
-                    children: pages,
-                  ),
+                  child: IndexedStack(index: currentIndex, children: pages),
                 ),
               ),
               StreamBuilder<PlayerState>(

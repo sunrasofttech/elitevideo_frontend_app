@@ -7,11 +7,7 @@ class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  const CustomBottomNavBar({
-    super.key,
-    required this.currentIndex,
-    required this.onTap,
-  });
+  const CustomBottomNavBar({super.key, required this.currentIndex, required this.onTap});
 
   @override
   State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
@@ -40,6 +36,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> items = [
       {"icon": AppImages.homeSvg, "label": "Home".tr()},
+      {"icon": AppImages.trailerSvg, "label": "Trailer".tr()},
       {"icon": AppImages.musicSvg, "label": "Music".tr()},
       {"icon": AppImages.searchSvg, "label": "Search".tr()},
       {"icon": AppImages.downloadSvg, "label": "Downloads".tr()},
@@ -54,10 +51,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         highlightColor: Colors.transparent,
       ),
       child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-        ),
+        borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
         child: BottomNavigationBar(
           backgroundColor: Colors.black,
           currentIndex: widget.currentIndex,
@@ -65,14 +59,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.grey,
-          selectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: 15,
-          ),
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal, fontSize: 15),
           items: items.map((item) {
             int index = items.indexOf(item);
             bool isSelected = index == widget.currentIndex;
@@ -89,7 +77,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                             color: const Color.fromRGBO(63, 173, 213, 1).withOpacity(_glowOpacity),
                             blurRadius: 15,
                             spreadRadius: 2,
-                          )
+                          ),
                         ],
                       )
                     : null,

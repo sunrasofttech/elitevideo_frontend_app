@@ -44,7 +44,6 @@ dependencies:
   flutter_svg: ^2.1.0
   flutter_rating_bar: ^4.0.1
   flutter_slidable: ^3.1.2
-  better_player_plus: ^1.0.8
   audio_video_progress_bar: ^2.0.3
   just_audio: ^0.9.46
   just_audio_background: ^0.0.1-beta.15

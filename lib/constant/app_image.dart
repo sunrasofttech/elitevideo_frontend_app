@@ -3,6 +3,7 @@ class AppImages {
   static const String crownSvg = "asset/svg/crown.svg";
   static const String downloadSvg = "asset/svg/download.svg";
   static const String homeSvg = "asset/svg/home.svg";
+  static const String trailerSvg = "asset/svg/video-play.svg";
   static const String musicSvg = "asset/svg/music.svg";
   static const String profileSvg = "asset/svg/profile.svg";
   static const String searchSvg = "asset/svg/search.svg";

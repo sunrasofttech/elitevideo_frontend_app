@@ -101,9 +101,7 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
   @override
   void initState() {
     // FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
-    context.read<GetCastCrewCubit>().getCastCrew(
-          movieId: widget.model.id ?? "",
-        );
+    context.read<GetCastCrewCubit>().getCastCrew(movieId: widget.model.id ?? "");
     _checkIfDownloaded();
     super.initState();
   }
@@ -136,15 +134,9 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
               context.read<GetContinueWatchingCubit>().getContinueWatching();
               Navigator.pop(context);
             },
-            child: const Icon(
-              Icons.arrow_back_ios_new_outlined,
-              color: AppColor.whiteColor,
-            ),
+            child: const Icon(Icons.arrow_back_ios_new_outlined, color: AppColor.whiteColor),
           ),
-          title: TextWidget(
-            text: "${widget.model.movieName}",
-            fontSize: 15,
-          ),
+          title: TextWidget(text: "${widget.model.movieName}", fontSize: 15),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -161,23 +153,23 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
                       ads: widget.model.movieAd,
                       audioUrl: widget.isTrailer
                           ? (widget.model.trailorVideo?.isNotEmpty == true
-                              ? widget.model.trailorVideo?.contains("https") ?? false
-                                  ? "${widget.model.trailorVideo}"
-                                  : "https://${widget.model.trailorVideo}"
-                              : widget.model.trailorVideoLink ?? "")
+                                ? widget.model.trailorVideo?.contains("https") ?? false
+                                      ? "${AppUrls.baseUrl}/${widget.model.trailorVideo}"
+                                      : "${AppUrls.baseUrl}/${widget.model.trailorVideo}"
+                                : widget.model.trailorVideoLink ?? "")
                           : (widget.model.movieVideo?.isNotEmpty == true
-                              ? widget.model.movieVideo?.contains("https") ?? false
-                                  ? "${widget.model.movieVideo}"
-                                  : "https://${widget.model.movieVideo}"
-                              : widget.model.videoLink ?? ""),
+                                ? widget.model.movieVideo?.contains("https") ?? false
+                                      ? "${AppUrls.baseUrl}/${widget.model.movieVideo}"
+                                      : "${AppUrls.baseUrl}/${widget.model.movieVideo}"
+                                : widget.model.videoLink ?? ""),
                       handleOnChanged: (int watchTime, {bool isWatched = false}) {
                         final videoUrl = widget.isTrailer
                             ? (widget.model.trailorVideo?.isNotEmpty == true
-                                ? "${AppUrls.baseUrl}/${widget.model.trailorVideo}"
-                                : widget.model.trailorVideoLink ?? "")
+                                  ? "${AppUrls.baseUrl}/${widget.model.trailorVideo}"
+                                  : widget.model.trailorVideoLink ?? "")
                             : (widget.model.movieVideo?.isNotEmpty == true
-                                ? "${AppUrls.baseUrl}/${widget.model.movieVideo}"
-                                : widget.model.videoLink ?? "");
+                                  ? "${AppUrls.baseUrl}/${widget.model.movieVideo}"
+                                  : widget.model.videoLink ?? "");
                         log("videoUrl=====> $videoUrl");
                         if (videoUrl.contains('youtube.com') || videoUrl.contains('youtu.be') || widget.isTrailer) {
                           return;
@@ -211,9 +203,9 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
                       child: GestureDetector(
                         onTap: () {
                           context.read<PostWatchlistCubit>().postWatchList(
-                                movieId: widget.model.id ?? "",
-                                type: ContentType.movie,
-                              );
+                            movieId: widget.model.id ?? "",
+                            type: ContentType.movie,
+                          );
                         },
                         child: Column(
                           children: [
@@ -221,15 +213,13 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
                               color: AppColor.whiteColor,
                               onPressed: () {
                                 context.read<PostWatchlistCubit>().postWatchList(
-                                      movieId: widget.model.id ?? "",
-                                      type: ContentType.movie,
-                                    );
+                                  movieId: widget.model.id ?? "",
+                                  type: ContentType.movie,
+                                );
                               },
                               icon: const Icon(Icons.add),
                             ),
-                            TextWidget(
-                              text: "Add To WatchList".tr(),
-                            )
+                            TextWidget(text: "Add To WatchList".tr()),
                           ],
                         ),
                       ),
@@ -243,14 +233,9 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
                             final link = "https://bigcinema.com?type=${ContentType.movie}&id=$movieId";
                             Share.share("Watch this movie on ${AppString.appName} 🎬\n$link");
                           },
-                          icon: const Icon(
-                            Icons.share,
-                            size: 20,
-                          ),
+                          icon: const Icon(Icons.share, size: 20),
                         ),
-                        TextWidget(
-                          text: "Share".tr(),
-                        )
+                        TextWidget(text: "Share".tr()),
                       ],
                     ),
                     (widget.isTrailer || isYouTubeLink(widget.model.videoLink))
@@ -336,7 +321,7 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
                                   ),
                                 ],
                               ),
-                              TextWidget(text: _isDownloading ? "Dowloading" : "Download".tr())
+                              TextWidget(text: _isDownloading ? "Dowloading" : "Download".tr()),
                             ],
                           ),
                   ],
@@ -345,18 +330,14 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
                 BlocBuilder<GetCastCrewCubit, GetCastCrewState>(
                   builder: (context, state) {
                     if (state is GetCastCrewLoadingState) {
-                      return const Center(
-                        child: CustomCircularProgressIndicator(),
-                      );
+                      return const Center(child: CustomCircularProgressIndicator());
                     }
 
                     if (state is GetCastCrewLoadedState) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextWidget(
-                            text: "Cast".tr(),
-                          ),
+                          TextWidget(text: "Cast".tr()),
                           sb10h(),
                           state.model.data?.isEmpty ?? true
                               ? TextWidget(text: "No Cast Crew Avaliable".tr())
@@ -403,10 +384,7 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
                                           sb5h(),
                                           TextWidget(text: "${data?.name}"),
                                           sb5h(),
-                                          TextWidget(
-                                            text: "${data?.role}",
-                                            color: AppColor.greyColor,
-                                          )
+                                          TextWidget(text: "${data?.role}", color: AppColor.greyColor),
                                         ],
                                       );
                                     },
@@ -420,19 +398,12 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
                   },
                 ),
                 sb10h(),
-                TextWidget(
-                  text: "Description".tr(),
-                ),
+                TextWidget(text: "Description".tr()),
                 sb10h(),
                 Html(
                   data: widget.model.description,
-                  style: {
-                    "body": Style(
-                      fontSize: FontSize(14.0),
-                      color: AppColor.whiteColor,
-                    ),
-                  },
-                )
+                  style: {"body": Style(fontSize: FontSize(14.0), color: AppColor.whiteColor)},
+                ),
               ],
             ),
           ),
