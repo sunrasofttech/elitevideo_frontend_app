@@ -60,12 +60,6 @@ class CashFreeScreen extends StatefulWidget {
 class _CashFreeScreenState extends State<CashFreeScreen> with Utility {
   String orderId = "";
   String paymentSessionId = "";
-
-  // String orderId = "order_18482TC1GWfnEYW3gheFhy4mArfynXh";
-  // String paymentSessionId = "session_gMej8P4gvNUKLbd3fGWVw7Njg5fj3KK4We0HjCg6Tkzy5yZ8mkghdv7vKels1CJ8fBz9_aVpSoU8n5rqufVQrexzhLW0g0dzgdiTJwmrkZYn";
-
-  // String orderId = "order_18482OupTxSofcClBAlgqyYxUVceHo8";
-  // String paymentSessionId = "session_oeYlKCusKyW5pND4Swzn1rE2-gwnoM8MOC2nck9RjIiUQwXcPLWB3U1xHaaItb-uA9H1k6Fwziq9O63DWcfYGy_3B7rl1nDFo3MMeVqiYrBr";
   CFEnvironment environment = CFEnvironment.PRODUCTION;
   String selectedId = "";
 
