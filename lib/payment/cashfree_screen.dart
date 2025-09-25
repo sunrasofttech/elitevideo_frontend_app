@@ -78,19 +78,11 @@ class _CashFreeScreenState extends State<CashFreeScreen> with Utility {
   }
 
   ValueNotifier<double> discountedAmount = ValueNotifier<double>(0.0);
-
-  ///ROHIT TEST CRED
-  ///client-id: TEST10179561d6e23494561355d9c80c16597101
-  ///'X-Client-Secret': 'cfsk_ma_test_6b23039cf0094adf8382643c7cf3e3ec_793b7c25'
-
-  ///PROD CREDS OF SUNRA SOFT
-  ///      'X-Client-Secret': 'cfsk_ma_prod_3b57611c98a55225e6789ca1656fc328_747e2bb4',
-  ///       'X-Client-Id': '6259159dfb044aa7dcf02103bc519526',
   Future<void> getOrderIdAndSessionId(User? model) async {
     double totalAmount = discountedAmount.value != 0.0 ? discountedAmount.value : widget.amount.toDouble();
     var headers = {
-      'X-Client-Secret': widget.secrectId ?? 'cfsk_ma_prod_3b57611c98a55225e6789ca1656fc328_747e2bb4',
-      'X-Client-Id': widget.appId ?? '6259159dfb044aa7dcf02103bc519526',
+      'X-Client-Secret': widget.secrectId,
+      'X-Client-Id': widget.appId,
       'x-api-version': '2023-08-01',
       'Content-Type': 'application/json',
       'Accept': 'application/json'
