@@ -45,7 +45,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
                   CustomCachedCard(
                     height: MediaQuery.of(context).size.height * 0.4,
                     width: MediaQuery.of(context).size.width * 1,
-                    imageUrl: "${AppUrls.baseUrl}/{widget.coverImg}",
+                    imageUrl: "${AppUrls.baseUrl}/${widget.coverImg}",
                   ),
                   const Positioned(top: 10, left: 10, child: CustomBackButton()),
                   Positioned(
@@ -153,7 +153,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> with Utility {
                                               ),
                                             ),
                                             sb10w(),
-                                            CustomCachedCard(height: 60, width: 60, imageUrl: data?.coverImg ?? ""),
+                                            CustomCachedCard(
+                                              height: 60,
+                                              width: 60,
+                                              imageUrl: "${AppUrls.baseUrl}/${data?.coverImg ?? ""}",
+                                            ),
                                             const SizedBox(width: 12),
                                             Expanded(
                                               child: Column(
