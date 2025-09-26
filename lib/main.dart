@@ -27,7 +27,11 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     await EasyLocalization.ensureInitialized();
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    await SystemChrome.setPreferredOrientations(
+      [
+        DeviceOrientation.portraitUp,
+      ],
+    );
     await JustAudioBackground.init(
       androidNotificationChannelId: "com.ryanheise.bg_demo.channel.audio",
       androidNotificationChannelName: "Audio playback",
