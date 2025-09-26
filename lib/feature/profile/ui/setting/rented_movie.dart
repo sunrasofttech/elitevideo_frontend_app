@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elite/constant/app_colors.dart';
@@ -162,7 +163,7 @@ class _MovieTabState extends State<MovieTab> with Utility {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               image: DecorationImage(
-                                image: NetworkImage("${movie?.posterImg}"),
+                                image: NetworkImage("${AppUrls.baseUrl}/${movie?.posterImg}"),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -247,7 +248,7 @@ class _SeriesTabState extends State<SeriesTab> with Utility {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               image: DecorationImage(
-                                image: NetworkImage("${data?.posterImg}"),
+                                image: NetworkImage("${AppUrls.baseUrl}/${data?.posterImg}"),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -330,7 +331,7 @@ class _ShortFilmTabState extends State<ShortFilmTab> with Utility {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               image: DecorationImage(
-                                image: NetworkImage("${data?.posterImg}"),
+                                image: NetworkImage("${AppUrls.baseUrl}/${data?.posterImg}"),
                                 fit: BoxFit.cover,
                               ),
                             ),

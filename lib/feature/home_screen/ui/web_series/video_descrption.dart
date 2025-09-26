@@ -4,6 +4,7 @@ import 'package:elite/constant/app_toast.dart';
 import 'package:elite/feature/profile/bloc/get_watchlist/get_watchlist_cubit.dart';
 import 'package:elite/main.dart';
 import 'package:elite/utils/storage/hive_db.dart';
+import 'package:flutter_windowmanager_plus/flutter_windowmanager_plus.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../model/episode.dart' as ep;
@@ -39,13 +40,13 @@ class _EpisodeDescScreenState extends State<EpisodeDescScreen> with Utility {
   @override
   void initState() {
     super.initState();
-    // FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+    FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
     _checkIfDownloaded();
   }
 
   @override
   void dispose() {
-    //  FlutterWindowManagerPlus.clearFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+     FlutterWindowManagerPlus.clearFlags(FlutterWindowManagerPlus.FLAG_SECURE);
     context.read<GetContinueWatchingCubit>().getContinueWatching();
     super.dispose();
   }

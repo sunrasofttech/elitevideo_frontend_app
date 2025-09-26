@@ -100,7 +100,7 @@ class _VideoDescrptionScreenState extends State<VideoDescrptionScreen> with Util
 
   @override
   void initState() {
-    // FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+    FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
     context.read<GetCastCrewCubit>().getCastCrew(movieId: widget.model.id ?? "");
     _checkIfDownloaded();
     super.initState();

@@ -18,13 +18,3 @@ import 'package:flutter/services.dart';
 //   }
 // }
 
-class ToastHelper {
-  static const platform = MethodChannel("toast");
-  static Future<void> showSuccessToast(String message) async {
-    try {
-      await platform.invokeMethod("showToast", {"message": message});
-    } on PlatformException catch (e) {
-      debugPrint("Failed to show toast: ${e.message}");
-    }
-  }
-}

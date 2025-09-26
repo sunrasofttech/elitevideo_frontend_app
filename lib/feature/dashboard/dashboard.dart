@@ -33,7 +33,6 @@ import 'package:elite/feature/search/bloc/search/search_cubit.dart';
 import 'package:elite/feature/search/ui/search_screen.dart';
 import 'package:elite/feature/splash_screen/onboarding_screen.dart';
 import 'package:elite/main.dart';
-import 'package:elite/utils/data.dart';
 import 'package:elite/utils/utility.dart';
 import 'package:elite/utils/widgets/custom_bottom_bar.dart';
 // import 'package:app_links/app_links.dart';
@@ -144,7 +143,6 @@ class DashboardScreenState extends State<DashboardScreen> with Utility {
               // OrientationHelper.autoRotateStream.listen((enabled) {
               //   log("Auto rotate changed: $enabled");
               // });
-              ToastHelper.showSuccessToast("message");
               if (currentIndex == 1) {
                 musicScreenState.currentState?.searchFocusNode.unfocus();
               }

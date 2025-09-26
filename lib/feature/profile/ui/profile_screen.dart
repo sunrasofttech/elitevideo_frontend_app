@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elite/constant/app_colors.dart';
@@ -88,7 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> with Utility {
                           fit: BoxFit.cover,
                         )
                       : CachedNetworkImage(
-                          imageUrl: "${data.profilePicture}",
+                          imageUrl: "${AppUrls.baseUrl}/${data.profilePicture}",
                           width: 46,
                           height: 46,
                           fit: BoxFit.cover,
@@ -406,7 +407,7 @@ class _WatchListTabSectionState extends State<WatchListTabSection> with TickerPr
                   child: CustomCachedCard(
                     height: 130,
                     width: 140,
-                    imageUrl: "$imagePath",
+                    imageUrl: "${AppUrls.baseUrl}/$imagePath",
                   ),
                 ),
               );

@@ -94,7 +94,7 @@ class _ShortFlimDescrptionScreenState extends State<ShortFlimDescrptionScreen> w
 
   @override
   void initState() {
-    // FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
+    FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
     context.read<GetCastCrewCubit>().getCastCrew(
           movieId: widget.model.id ?? "",
         );

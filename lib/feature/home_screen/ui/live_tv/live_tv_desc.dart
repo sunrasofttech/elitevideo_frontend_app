@@ -9,6 +9,7 @@ import 'package:elite/utils/utility.dart';
 import 'package:elite/utils/widgets/custom_video_player.dart';
 import 'package:elite/utils/widgets/custombutton.dart';
 import 'package:elite/utils/widgets/textwidget.dart';
+import 'package:flutter_windowmanager_plus/flutter_windowmanager_plus.dart';
 
 class LiveTvDesc extends StatefulWidget {
   const LiveTvDesc({super.key, required this.model, required this.isTrailer, this.lastPosition});
@@ -23,6 +24,7 @@ class LiveTvDesc extends StatefulWidget {
 class _LiveTvDescState extends State<LiveTvDesc> with Utility {
   @override
   void initState() {
+    FlutterWindowManagerPlus.addFlags(FlutterWindowManagerPlus.FLAG_SECURE);
     super.initState();
   }
 
@@ -33,6 +35,7 @@ class _LiveTvDescState extends State<LiveTvDesc> with Utility {
 
   @override
   void dispose() {
+    FlutterWindowManagerPlus.clearFlags(FlutterWindowManagerPlus.FLAG_SECURE);
     super.dispose();
   }
 

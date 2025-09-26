@@ -1,3 +1,4 @@
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elite/constant/app_colors.dart';
@@ -79,7 +80,7 @@ class _LiveCategoryScreenState extends State<LiveCategoryScreen> {
                           child: CustomCachedCard(
                             height: double.infinity,
                             width: double.infinity,
-                            imageUrl: data.coverImg ?? "",
+                            imageUrl: "${AppUrls.baseUrl}/${data.coverImg ?? ""}",
                           ),
                         ),
                         Padding(

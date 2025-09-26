@@ -1,3 +1,4 @@
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elite/constant/app_colors.dart';
@@ -86,7 +87,7 @@ class _GetAllLiveByIdScreenState extends State<GetAllLiveByIdScreen> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: CustomCachedCard(
-                                    imageUrl: movie.coverImg ?? "",
+                                    imageUrl:"${AppUrls.baseUrl}/${movie.coverImg ?? ""}",
                                     width: double.infinity,
                                     height: 100,
                                   ),

@@ -1,3 +1,4 @@
+import 'package:elite/constant/app_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:elite/constant/app_colors.dart';
@@ -85,7 +86,7 @@ class _MovieCategoryScreenState extends State<MovieCategoryScreen> {
                               child: CustomCachedCard(
                                 height: double.infinity,
                                 width: double.infinity,
-                                imageUrl: data?.img ?? "",
+                                imageUrl: "${AppUrls.baseUrl}/${data?.img ?? ""}",
                               ),
                             ),
                           ),
