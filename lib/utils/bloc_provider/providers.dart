@@ -62,6 +62,7 @@ import '../../feature/profile/bloc/create_order/create_order_cubit.dart';
 import '../../feature/search/bloc/get_all_category/get_all_category_cubit.dart';
 import '../../feature/search/bloc/get_live_category/get_live_category_cubit.dart';
 import '../../feature/search/bloc/search/search_cubit.dart';
+import '../../feature/trailer/get_all_trailer/get_all_trailer_cubit.dart';
 
 List<SingleChildWidget> providers = [
   BlocProvider(create: (context) => LoginCubit()),
@@ -126,4 +127,5 @@ List<SingleChildWidget> providers = [
   BlocProvider(create: (context) => GetAllPlaylistCubit()),
   BlocProvider(create: (context) => DeletePlaylistCubit()),
   BlocProvider(create: (context) => AddSongInPlaylistCubit()),
+  BlocProvider(create: (context) => GetAllTrailerCubit()),
 ];

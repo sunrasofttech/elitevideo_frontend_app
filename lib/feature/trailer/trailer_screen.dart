@@ -3,14 +3,16 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:elite/constant/app_colors.dart';
 import 'package:elite/constant/app_urls.dart';
 import 'package:elite/feature/auth/bloc/get_profile/get_profile_cubit.dart';
-import 'package:elite/feature/home_screen/bloc/get_all_movie/get_all_movie_cubit.dart';
-import 'package:elite/feature/home_screen/ui/movie/video_descrption.dart';
+import 'package:elite/feature/trailer/get_all_trailer/get_all_trailer_cubit.dart';
+import 'package:elite/feature/trailer/trailer_video.dart';
 import 'package:elite/main.dart';
 import 'package:elite/utils/utility.dart';
 import 'package:elite/utils/widgets/custom_cached.dart';
 import 'package:elite/utils/widgets/textwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'get_all_trailer/get_all_trailer_model.dart';
 
 class TrailerScreen extends StatefulWidget {
   const TrailerScreen({super.key});
@@ -26,7 +28,6 @@ class _TrailerScreenState extends State<TrailerScreen> with Utility {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: TextWidget(text: "Trailer".tr(), fontSize: 16, fontWeight: FontWeight.w600),
-
         actions: [
           sb10w(),
           GestureDetector(
@@ -74,9 +75,9 @@ class _TrailerScreenState extends State<TrailerScreen> with Utility {
           sb10w(),
         ],
       ),
-      body: BlocBuilder<GetAllMovieCubit, GetAllMovieState>(
+      body: BlocBuilder<GetAllTrailerCubit, GetAllTrailerState>(
         builder: (context, state) {
-          if (state is GetAllMovieLaodedState) {
+          if (state is GetAllTrailerLoadedState) {
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -86,17 +87,18 @@ class _TrailerScreenState extends State<TrailerScreen> with Utility {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: state.model.data?.movies?.length,
+                      itemCount: state.model.data?.trailors?.length,
                       itemBuilder: (context, index) {
-                        var data = state.model.data?.movies?[index];
+                        var data = state.model.data?.trailors?[index];
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VideoDescrptionScreen(isTrailer: true, model: data!),
-                              ),
-                            );
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TrailerVideoDesc(
+                                    model: data ?? Trailor(),
+                                  ),
+                                ));
                           },
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

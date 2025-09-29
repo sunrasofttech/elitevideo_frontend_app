@@ -41,6 +41,7 @@ import 'package:elite/utils/widgets/custom_server_down.dart';
 import 'package:elite/utils/widgets/mini_player.dart';
 import '../../utils/widgets/audio_player_singleton.dart';
 import '../profile/bloc/get_subscription/get_subscription_cubit.dart';
+import '../trailer/get_all_trailer/get_all_trailer_cubit.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key, this.currentIndex});
@@ -100,6 +101,7 @@ class DashboardScreenState extends State<DashboardScreen> with Utility {
     context.read<GetAllLanguageCubit>().getAllLanguage();
     context.read<GetPopularMusicCubit>().getAllMusic();
     context.read<GetArtistCubit>().getAllArtist();
+    context.read<GetAllTrailerCubit>().getAllTrailer();
     // appLinks.uriLinkStream.listen(
     //   (Uri? uri) {
     //     debugPrint("Received Uri: $uri");
