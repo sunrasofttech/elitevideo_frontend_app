@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1082710247779",
+    "project_id": "elite-fcd30",
+    "storage_bucket": "elite-fcd30.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082710247779:android:1420382ae175fa1eb3ab56",
+        "android_client_info": {
+          "package_name": "com.mt.elite"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZH52OH8vauIoT4z68H6QVKCHIdREHUaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
